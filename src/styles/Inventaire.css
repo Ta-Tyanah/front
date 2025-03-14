@@ -1,0 +1,78 @@
+.page-inventaire {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .titre-page {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.8rem;
+  }
+  
+  .section-inventaire {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .entete-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filtre-inventaire {
+    width: 250px;
+  }
+  
+  .champ-filtre {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  .liste-inventaire {
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .item-inventaire:hover {
+    background-color: #f8f9fa;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .filtre-inventaire {
+      width: 100%;
+    }
+  }
+  
+  

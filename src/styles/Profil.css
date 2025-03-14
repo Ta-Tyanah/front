@@ -1,0 +1,200 @@
+.page-profil {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.titre-page {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+/* Remplacer les styles de message par des styles d'alerte */
+.alerte {
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.alerte-succes {
+  background-color: #e8f5e9;
+  color: #388e3c;
+  border-left: 4px solid #388e3c;
+}
+
+.alerte-erreur {
+  background-color: #ffebee;
+  color: #d32f2f;
+  border-left: 4px solid #d32f2f;
+}
+
+.icone-alerte {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.texte-alerte {
+  flex: 1;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.conteneur-profil {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+.section-avatar {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-profil {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1.5rem;
+}
+
+/* Styles pour les boutons */
+.bouton-changer-avatar {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--primary); /* Rouge */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
+}
+
+.bouton-changer-avatar:hover {
+  background-color: var(--primary-hover); /* Rouge plus foncé */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
+}
+
+.section-informations,
+.section-securite {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.section-informations h2,
+.section-securite h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.formulaire-profil,
+.formulaire-securite {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.groupe-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.groupe-champ label {
+  font-weight: 500;
+  color: #555;
+}
+
+.groupe-champ input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.groupe-champ input:focus {
+  border-color: #2196f3;
+  outline: none;
+}
+
+.bouton-sauvegarder {
+  padding: 0.75rem;
+  background-color: var(--primary); /* Rouge */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
+}
+
+.bouton-sauvegarder:hover {
+  background-color: var(--primary-hover); /* Rouge plus foncé */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
+}
+
+.bouton-changer-mdp {
+  padding: 0.75rem;
+  background-color: var(--gray); /* Gris */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 0.5rem;
+}
+
+.bouton-changer-mdp:hover {
+  background-color: var(--gray-dark); /* Gris foncé */
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .conteneur-profil {
+    grid-template-columns: 1fr;
+  }
+
+  .section-avatar {
+    margin-bottom: 2rem;
+  }
+}
+

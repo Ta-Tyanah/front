@@ -1,0 +1,374 @@
+/* Variables pour les couleurs et animations */
+:root {
+  --primary: #e50000;
+  --primary-hover: #c50000;
+  --dark: #000000;
+  --gray-dark: #333333;
+  --gray: #666666;
+  --gray-light: #e0e0e0;
+  --gray-lighter: #f5f5f5;
+  --white: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+.page-connexion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--white);
+  animation: gradientBG 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-connexion::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(229, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+  animation: rotate 20s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.conteneur-connexion {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  background-color: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.conteneur-connexion::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to right, var(--primary), var(--primary-hover));
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotateX(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+.titre-connexion {
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.titre-connexion::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary);
+  transition: width var(--transition-normal);
+}
+
+.titre-connexion:hover::after {
+  width: 100px;
+}
+
+.alerte {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  animation: slideInDown 0.4s ease-out;
+  box-shadow: var(--shadow-sm);
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alerte-erreur {
+  background-color: #ffebee;
+  color: var(--primary);
+  border-left: 4px solid var(--primary);
+}
+
+.alerte-succes {
+  background-color: #e8f5e9;
+  color: #388e3c;
+  border-left: 4px solid #388e3c;
+}
+
+.icone-alerte {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.texte-alerte {
+  flex: 1;
+}
+
+.formulaire-connexion {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.groupe-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.groupe-champ label {
+  font-weight: 600;
+  color: var(--dark);
+  transition: color var(--transition-fast);
+}
+
+.groupe-champ:focus-within label {
+  color: var(--primary);
+}
+
+.champ-saisie {
+  padding: 1rem;
+  border: 2px solid var(--gray-light);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  transition: all var(--transition-normal);
+  background-color: var(--white);
+}
+
+.champ-saisie:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(229, 0, 0, 0.1);
+}
+
+.champ-saisie:hover {
+  border-color: var(--gray);
+}
+
+.champ-saisie:disabled {
+  background-color: var(--gray-lighter);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.bouton-connexion {
+  padding: 1rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(229, 0, 0, 0.2);
+}
+
+.bouton-connexion::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%) rotate(45deg);
+  transition: transform 0.6s ease;
+}
+
+.bouton-connexion:hover::before {
+  transform: translateX(100%) rotate(45deg);
+}
+
+.bouton-connexion:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(229, 0, 0, 0.3);
+}
+
+.bouton-connexion:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(229, 0, 0, 0.2);
+}
+
+.bouton-connexion:disabled {
+  background-color: var(--gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.bouton-connexion.chargement {
+  background-color: var(--gray);
+  pointer-events: none;
+}
+
+.bouton-connexion.chargement::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.lien-inscription {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--gray);
+  position: relative;
+  padding-top: 1rem;
+}
+
+.lien-inscription::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 1px;
+  background-color: var(--gray-light);
+}
+
+.lien-inscription a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  position: relative;
+  display: inline-block;
+}
+
+.lien-inscription a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary);
+  transition: width var(--transition-normal);
+}
+
+.lien-inscription a:hover {
+  color: var(--primary-hover);
+}
+
+.lien-inscription a:hover::after {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .conteneur-connexion {
+    margin: 0 1rem;
+    padding: 2rem;
+  }
+}
+
+/* Animation d'apparition des champs */
+.groupe-champ {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.groupe-champ:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.groupe-champ:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.bouton-connexion {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease-out forwards;
+  animation-delay: 0.4s;
+}
+
+.lien-inscription {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: 0.6s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

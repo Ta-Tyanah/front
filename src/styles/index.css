@@ -1,0 +1,198 @@
+/* Variables globales */
+:root {
+  --primary: #e50000;
+  --primary-hover: #c50000;
+  --dark: #000000;
+  --gray-dark: #333333;
+  --gray: #666666;
+  --gray-light: #e0e0e0;
+  --gray-lighter: #f5f5f5;
+  --white: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --sidebar-bg: #f0f0f0; /* Fond du menu latéral */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--dark);
+  background-color: var(--white);
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Écran de chargement */
+.ecran-chargement {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--gray-light);
+  border-top: 5px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animations globales */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Classes d'animation réutilisables */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.slide-up {
+  animation: slideInUp 0.5s ease-out;
+}
+
+.slide-down {
+  animation: slideInDown 0.5s ease-out;
+}
+
+.slide-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+.slide-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+/* Styles pour les scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-lighter);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--gray);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--gray-dark);
+}
+
