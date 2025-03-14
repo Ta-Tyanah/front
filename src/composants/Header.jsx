@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexte/AuthContexte"
+import { User, LogOut, UserPlus, ChevronDown, ChevronUp } from "lucide-react"
 
 function Header() {
   const { utilisateurCourant, deconnexion } = useAuth()
@@ -62,19 +63,30 @@ function Header() {
             className="avatar-utilisateur"
           />
           <span className="nom-utilisateur">{utilisateurCourant?.nom || "Utilisateur"}</span>
-          <span className="icone-fleche-bas">▼</span>
+          <span className="icone-fleche-bas">
+            {menuProfilOuvert ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </span>
         </div>
 
         {menuProfilOuvert && (
           <div className="menu-profil">
             <NavLink to="/dashboard/profil" onClick={() => setMenuProfilOuvert(false)}>
-              <span className="icone-menu-item">👤</span> Profil
+              <span className="icone-menu-item">
+                <User size={16} />
+              </span>{" "}
+              Profil
             </NavLink>
             <NavLink to="/inscription" onClick={() => setMenuProfilOuvert(false)}>
-              <span className="icone-menu-item">📝</span> Inscription
+              <span className="icone-menu-item">
+                <UserPlus size={16} />
+              </span>{" "}
+              Inscription
             </NavLink>
             <button onClick={gererDeconnexion}>
-              <span className="icone-menu-item">🚪</span> Déconnexion
+              <span className="icone-menu-item">
+                <LogOut size={16} />
+              </span>{" "}
+              Déconnexion
             </button>
           </div>
         )}

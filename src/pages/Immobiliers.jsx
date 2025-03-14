@@ -25,38 +25,11 @@ function Immobiliers() {
 
   // Charger les données
   useEffect(() => {
-    // Simulation de données
-    const donneesMockees = [
-      {
-        id: 1,
-        nom: "Bâtiment principal",
-        type: "Bâtiment",
-        localisation: "Zone industrielle",
-        dateAcquisition: "2015-05-12",
-        valeur: 450000,
-        etat: "Bon",
-      },
-      {
-        id: 2,
-        nom: "Camion de livraison",
-        type: "Véhicule",
-        localisation: "Garage",
-        dateAcquisition: "2020-03-18",
-        valeur: 35000,
-        etat: "Excellent",
-      },
-      {
-        id: 3,
-        nom: "Terrain expansion",
-        type: "Terrain",
-        localisation: "Zone périphérique",
-        dateAcquisition: "2018-11-05",
-        valeur: 120000,
-        etat: "Bon",
-      },
-    ]
+    const immobiliersSauvegardes = localStorage.getItem("immobiliers")
 
-    setImmobiliers(donneesMockees)
+    if (immobiliersSauvegardes) {
+      setImmobiliers(JSON.parse(immobiliersSauvegardes))
+    }
   }, [])
 
   // Filtrer les immobiliers
@@ -106,22 +79,22 @@ function Immobiliers() {
 
   // Sauvegarder l'immobilier
   const sauvegarderImmobilier = () => {
+    let immobiliersUpdated
+
     if (immobilierEdite) {
       // Mise à jour
-      setImmobiliers(
-        immobiliers.map((item) =>
-          item.id === immobilierEdite.id
-            ? {
-                ...item,
-                nom: formData.nom,
-                type: formData.type,
-                localisation: formData.localisation,
-                dateAcquisition: formData.dateAcquisition,
-                valeur: Number.parseFloat(formData.valeur),
-                etat: formData.etat,
-              }
-            : item,
-        ),
+      immobiliersUpdated = immobiliers.map((item) =>
+        item.id === immobilierEdite.id
+          ? {
+              ...item,
+              nom: formData.nom,
+              type: formData.type,
+              localisation: formData.localisation,
+              dateAcquisition: formData.dateAcquisition,
+              valeur: Number.parseFloat(formData.valeur),
+              etat: formData.etat,
+            }
+          : item,
       )
     } else {
       // Ajout
@@ -135,16 +108,20 @@ function Immobiliers() {
         etat: formData.etat,
       }
 
-      setImmobiliers([...immobiliers, nouvelImmobilier])
+      immobiliersUpdated = [...immobiliers, nouvelImmobilier]
     }
 
+    setImmobiliers(immobiliersUpdated)
+    localStorage.setItem("immobiliers", JSON.stringify(immobiliersUpdated))
     fermerModal()
   }
 
   // Supprimer un immobilier
   const supprimerImmobilier = (id) => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cet immobilier?")) {
-      setImmobiliers(immobiliers.filter((item) => item.id !== id))
+    if (confirm(`Êtes-vous sûr de vouloir supprimer cet immobilier?`)) {
+      const immobiliersUpdated = immobiliers.filter((item) => item.id !== id)
+      setImmobiliers(immobiliersUpdated)
+      localStorage.setItem("immobiliers", JSON.stringify(immobiliersUpdated))
     }
   }
 
@@ -175,7 +152,7 @@ function Immobiliers() {
                 <th>Nom</th>
                 <th>Type</th>
                 <th>Localisation</th>
-                <th>Date {`d'acquisition`}</th>
+                <th>Date{` d'acquisition`}</th>
                 <th>Valeur</th>
                 <th>État</th>
                 <th>Actions</th>

@@ -1,28 +1,26 @@
+"use client"
+
 import { useOutletContext } from "react-router-dom"
 import "../styles/Dashboard.css"
+import { useState, useEffect } from "react"
 
 function AccueilDashboard() {
   const [statistiques] = useOutletContext()
 
-  // Données pour les activités récentes
-  const activitesRecentes = [
-    { id: 1, type: "Stock", description: "Ajout de 15 ordinateurs portables", date: "2023-05-15", statut: "Actif" },
-    {
-      id: 2,
-      type: "Dispatche",
-      description: "Livraison au département Marketing",
-      date: "2023-05-14",
-      statut: "En attente",
-    },
-    {
-      id: 3,
-      type: "Immobilier",
-      description: "Mise à jour du bâtiment principal",
-      date: "2023-05-12",
-      statut: "Actif",
-    },
-    { id: 4, type: "Stock", description: "Suppression de 5 imprimantes", date: "2023-05-10", statut: "Inactif" },
-  ]
+  // Remplacer les activités récentes par un tableau vide
+  const activitesRecentesInit = []
+
+  // Ajouter un état pour les activités récentes
+  const [activitesRecentes, setActivitesRecentes] = useState(activitesRecentesInit)
+
+  // Ajouter useEffect pour charger les activités récentes depuis localStorage
+  useEffect(() => {
+    const activitesSauvegardees = localStorage.getItem("activitesRecentes")
+
+    if (activitesSauvegardees) {
+      setActivitesRecentes(JSON.parse(activitesSauvegardees))
+    }
+  }, [])
 
   return (
     <div className="accueil-dashboard">
@@ -122,18 +120,26 @@ function AccueilDashboard() {
               </tr>
             </thead>
             <tbody>
-              {activitesRecentes.map((activite) => (
-                <tr key={activite.id}>
-                  <td>{activite.type}</td>
-                  <td>{activite.description}</td>
-                  <td>{activite.date}</td>
-                  <td>
-                    <span className={`statut-badge statut-${activite.statut.toLowerCase().replace(" ", "-")}`}>
-                      {activite.statut}
-                    </span>
+              {activitesRecentes.length > 0 ? (
+                activitesRecentes.map((activite) => (
+                  <tr key={activite.id}>
+                    <td>{activite.type}</td>
+                    <td>{activite.description}</td>
+                    <td>{activite.date}</td>
+                    <td>
+                      <span className={`statut-badge statut-${activite.statut.toLowerCase().replace(" ", "-")}`}>
+                        {activite.statut}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="no-data">
+                    Aucune activité récente à afficher.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

@@ -8,10 +8,12 @@ import Dispatche from "./pages/Dispatche"
 import Immobiliers from "./pages/Immobiliers"
 import Profil from "./pages/Profil"
 import { AuthProvider } from "./contexte/AuthContexte"
+import { StockProvider } from "./contexte/StockContexte"
 
 function App() {
   return (
     <AuthProvider>
+       <StockProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/connexion" />} />
@@ -27,9 +29,10 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      </StockProvider>
     </AuthProvider>
+   
   )
 }
 
 export default App
-

@@ -25,27 +25,82 @@
   align-items: center;
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.boite-categorie::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, var(--primary), var(--primary-hover));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+  overflow-x: auto;
+}
+
+.boite-categorie:hover::before {
+  transform: scaleX(1);
 }
 
 .boite-categorie:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .icone-categorie {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(229, 0, 0, 0.1);
+  border-radius: 50%;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.boite-categorie:hover .icone-categorie {
+  transform: scale(1.1) rotate(5deg);
+  background-color: rgba(229, 0, 0, 0.2);
 }
 
 .boite-categorie h3 {
   margin-bottom: 0.5rem;
   color: #333;
+  transition: color 0.3s ease;
+}
+
+.boite-categorie:hover h3 {
+  color: var(--primary);
 }
 
 .quantite-categorie {
   font-size: 1.1rem;
   font-weight: 500;
-  color: #2196f3;
+  color: var(--primary);
+  transition: transform 0.3s ease;
+}
+
+.boite-categorie:hover .quantite-categorie {
+  transform: scale(1.1);
+}
+
+.no-categories {
+  grid-column: 1 / -1;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  color: var(--gray);
+  font-style: italic;
 }
 
 .section-gestion-stock {
@@ -53,6 +108,11 @@
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.section-gestion-stock:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .entete-section {
@@ -65,6 +125,23 @@
 .entete-section h2 {
   margin: 0;
   color: #333;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.entete-section h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.section-gestion-stock:hover .entete-section h2::after {
+  width: 100%;
 }
 
 .actions-stock {
@@ -75,6 +152,7 @@
 
 .filtre-stock {
   width: 250px;
+  position: relative;
 }
 
 .champ-filtre {
@@ -83,6 +161,13 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.champ-filtre:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(229, 0, 0, 0.1);
 }
 
 /* Styles pour les boutons */
@@ -94,14 +179,51 @@
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.bouton-ajouter::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: transform 0.6s ease;
+  transform: skewX(-15deg);
+}
+
+.bouton-ajo255,
+255,
+0.2 
+) 
+;
+transition: transform 0.6s ease
+;
+transform: skewX(-15deg
+)
+;
+}
+
+.bouton-ajouter:hover::before {
+  transform: translateX(200%) skewX(-15deg);
 }
 
 .bouton-ajouter:hover {
   background-color: var(--primary-hover); /* Rouge plus foncé */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
+}
+
+.bouton-ajouter:active {
+  transform: translateY(0);
 }
 
 .bouton-modifier {
@@ -112,7 +234,10 @@
   border-radius: 4px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .bouton-modifier:hover {
@@ -128,7 +253,10 @@
   border-radius: 4px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .bouton-supprimer:hover {
@@ -144,14 +272,47 @@
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.bouton-enregistrer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: transform 0.6s ease;
+  transform: skewX(-15deg);
+}
+
+.bouton-enregistrer:hover::before {
+  transform: translateX(200%) skewX(-15deg);
 }
 
 .bouton-enregistrer:hover {
   background-color: var(--primary-hover); /* Rouge plus foncé */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
+}
+
+.bouton-enregistrer:disabled {
+  background-color: var(--gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.bouton-enregistrer:disabled::before {
+  display: none;
 }
 
 .bouton-annuler {
@@ -162,11 +323,12 @@
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .bouton-annuler:hover {
   background-color: var(--gray-dark); /* Gris foncé */
+  transform: translateY(-2px);
 }
 
 .bouton-sauvegarder {
@@ -177,8 +339,26 @@
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.bouton-sauvegarder::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: transform 0.6s ease;
+  transform: skewX(-15deg);
+}
+
+.bouton-sauvegarder:hover::before {
+  transform: translateX(200%) skewX(-15deg);
 }
 
 .bouton-sauvegarder:hover {
@@ -187,14 +367,92 @@
   box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
 }
 
-.tableau-stock {
-  overflow-x: auto;
+.bouton-sauvegarder:disabled {
+  background-color: var(--gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.bouton-sauvegarder:disabled::before {
+  display: none;
+}
+
+/* Améliorer le défilement horizontal du tableau */
+.tableau-stock-wrapper {
+  position: relative;
   margin-bottom: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tableau-stock {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray) transparent;
+  max-height: 70vh; /* Limiter la hauteur pour éviter de prendre tout l'écran */
+  overflow-y: auto; /* Permettre le défilement vertical si nécessaire */
+}
+
+.tableau-stock::-webkit-scrollbar {
+  height: 10px; /* Augmenter la hauteur pour faciliter le défilement */
+  width: 10px;
+}
+
+.tableau-stock::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.tableau-stock::-webkit-scrollbar-thumb {
+  background: var(--gray);
+  border-radius: 4px;
+}
+
+.tableau-stock::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-dark);
+}
+
+/* Indicateur de défilement */
+.tableau-stock::after {
+  content: "→";
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0.7;
+  animation: pulse 2s infinite;
+  pointer-events: none;
+  display: none; /* Caché par défaut */
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Afficher l'indicateur seulement si le contenu dépasse */
+.tableau-stock.scrollable::after {
+  display: block;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 1000px; /* Force horizontal scroll on small screens */
 }
 
 th,
@@ -208,10 +466,19 @@ th {
   background-color: #f8f9fa;
   font-weight: 600;
   color: #495057;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+tbody tr {
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 tbody tr:hover {
   background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .cellule-readonly {
@@ -227,6 +494,7 @@ tbody tr:hover {
 .actions-bas-tableau {
   display: flex;
   justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 .modal-overlay {
@@ -241,6 +509,7 @@ tbody tr:hover {
   align-items: center;
   z-index: 100;
   animation: fadeIn 0.3s ease-in-out;
+  backdrop-filter: blur(3px);
 }
 
 .modal-contenu {
@@ -249,13 +518,38 @@ tbody tr:hover {
   padding: 2rem;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideInUp 0.4s ease-out;
+  transform-origin: bottom;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modal-contenu h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
   color: #333;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.modal-contenu h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary);
 }
 
 .formulaire-modal {
@@ -269,6 +563,18 @@ tbody tr:hover {
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1rem;
+}
+
+.categorie-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.categorie-icon {
+  display: flex;
+  align-items: center;
+  color: var(--primary);
 }
 
 @keyframes fadeIn {
@@ -295,7 +601,7 @@ tbody tr:hover {
   }
 }
 
-/* Ajouter les styles pour les alertes flottantes */
+/* Améliorer les alertes flottantes */
 .alerte-flottante {
   position: fixed;
   bottom: 20px;
@@ -308,6 +614,13 @@ tbody tr:hover {
   z-index: 1000;
   animation: slideInRight 0.3s ease-in-out;
   max-width: 350px;
+  transform: translateX(0);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.alerte-flottante.disparition {
+  transform: translateX(100px);
+  opacity: 0;
 }
 
 .alerte-flottante.alerte-succes {
@@ -331,10 +644,6 @@ tbody tr:hover {
   flex: 1;
 }
 
-.alerte-flottante.disparition {
-  animation: slideOutRight 0.3s ease-in-out forwards;
-}
-
 @keyframes slideInRight {
   from {
     opacity: 0;
@@ -355,5 +664,101 @@ tbody tr:hover {
     opacity: 0;
     transform: translateX(100px);
   }
+}
+
+/* Ajouter un style pour le message "pas de données" */
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+/* Styles pour les alertes de confirmation modernes */
+.alerte-confirmation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(3px);
+}
+
+.alerte-confirmation.visible {
+  opacity: 1;
+}
+
+.alerte-contenu {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.alerte-confirmation.visible .alerte-contenu {
+  transform: translateY(0);
+}
+
+.alerte-titre {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.alerte-message {
+  margin-bottom: 1.5rem;
+  color: var(--gray);
+}
+
+.alerte-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.bouton-annuler-alerte {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--gray-light);
+  color: var(--gray-dark);
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bouton-annuler-alerte:hover {
+  background-color: var(--gray);
+  color: white;
+}
+
+.bouton-confirmer-alerte {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
+}
+
+.bouton-confirmer-alerte:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
 }
 

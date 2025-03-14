@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { NavLink, useLocation } from "react-router-dom"
-import PropTypes from 'prop-types';
+import { LayoutDashboard, Package, ClipboardList, Truck, Building2, ChevronDown, ChevronUp } from "lucide-react"
 
 function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
   const [sousMenuOuvert, setSousMenuOuvert] = useState(true)
@@ -10,16 +10,17 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
 
   // Ouvrir automatiquement le sous-menu correspondant à la route active
   useEffect(() => {
-    const sousMenus = [
-      "/dashboard/stock",
-      "/dashboard/inventaire",
-      "/dashboard/dispatche",
-    ]
-    setSousMenuOuvert(sousMenus.some((path) => location.pathname.includes(path)))
+    if (
+      location.pathname.includes("/dashboard/stock") ||
+      location.pathname.includes("/dashboard/inventaire") ||
+      location.pathname.includes("/dashboard/dispatche")
+    ) {
+      setSousMenuOuvert(true)
+    }
   }, [location])
 
   const basculerSousMenu = () => {
-    setSousMenuOuvert((prev) => !prev)
+    setSousMenuOuvert(!sousMenuOuvert)
   }
 
   const fermerMenuMobile = () => {
@@ -39,14 +40,19 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
             className={({ isActive }) => (isActive ? "lien-actif" : "")}
             onClick={fermerMenuMobile}
           >
-            <span className="icone-menu-item">📊</span> Accueil
+            <span className="icone-menu-item">
+              <LayoutDashboard size={18} />
+            </span>
+            <span className="texte-menu-item">Accueil</span>
           </NavLink>
         </div>
 
         <div className="groupe-menu">
           <div className="entete-groupe-menu" onClick={basculerSousMenu}>
             <h3 className="titre-menu">Gestion des consommables</h3>
-            <span className={`icone-fleche ${sousMenuOuvert ? "ouvert" : ""}`}>▼</span>
+            <span className={`icone-fleche ${sousMenuOuvert ? "ouvert" : ""}`}>
+              {sousMenuOuvert ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </span>
           </div>
 
           <div className={`sous-menu ${sousMenuOuvert ? "ouvert" : ""}`}>
@@ -55,21 +61,30 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
               className={({ isActive }) => (isActive ? "lien-actif" : "")}
               onClick={fermerMenuMobile}
             >
-              <span className="icone-menu-item">📦</span> Stock
+              <span className="icone-menu-item">
+                <Package size={18} />
+              </span>
+              <span className="texte-menu-item">Stock</span>
             </NavLink>
             <NavLink
               to="/dashboard/inventaire"
               className={({ isActive }) => (isActive ? "lien-actif" : "")}
               onClick={fermerMenuMobile}
             >
-              <span className="icone-menu-item">📋</span> Inventaire
+              <span className="icone-menu-item">
+                <ClipboardList size={18} />
+              </span>
+              <span className="texte-menu-item">Inventaire</span>
             </NavLink>
             <NavLink
               to="/dashboard/dispatche"
               className={({ isActive }) => (isActive ? "lien-actif" : "")}
               onClick={fermerMenuMobile}
             >
-              <span className="icone-menu-item">🚚</span> Dispatche
+              <span className="icone-menu-item">
+                <Truck size={18} />
+              </span>
+              <span className="texte-menu-item">Dispatche</span>
             </NavLink>
           </div>
         </div>
@@ -81,7 +96,10 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
             className={({ isActive }) => (isActive ? "lien-actif" : "")}
             onClick={fermerMenuMobile}
           >
-            <span className="icone-menu-item">🏢</span> Immobiliers
+            <span className="icone-menu-item">
+              <Building2 size={18} />
+            </span>
+            <span className="texte-menu-item">Immobiliers</span>
           </NavLink>
         </div>
       </nav>
@@ -89,10 +107,5 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
   )
 }
 
-// Ajout des PropTypes
-SidebarMenu.propTypes = {
-  menuMobileOuvert: PropTypes.bool.isRequired,
-  setMenuMobileOuvert: PropTypes.func.isRequired,
-};
-
 export default SidebarMenu
+

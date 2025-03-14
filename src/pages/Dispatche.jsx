@@ -1,62 +1,77 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import "../styles/Dispatche.css"
+import { Search, Plus, Edit } from "lucide-react"
 
 function Dispatche() {
-  const [departements, setDepartements] = useState([
-    { id: 1, nom: "Informatique" },
-    { id: 2, nom: "Comptabilité" },
-    { id: 3, nom: "Ressources Humaines" },
-    { id: 4, nom: "Marketing" },
-  ])
-
-  const [produits, setProduits] = useState([
-    { id: 1, designation: "Ordinateur portable", quantite: 15 },
-    { id: 2, designation: "Imprimante laser", quantite: 8 },
-    { id: 3, designation: "Souris sans fil", quantite: 25 },
-    { id: 4, designation: "Clavier ergonomique", quantite: 12 },
-  ])
-
-  const [dispatches, setDispatches] = useState([
-    {
-      id: 1,
-      produitId: 1,
-      departementId: 1,
-      quantite: 2,
-      date: "2023-03-10",
-      status: "Livré",
-    },
-    {
-      id: 2,
-      produitId: 3,
-      departementId: 2,
-      quantite: 5,
-      date: "2023-03-12",
-      status: "En attente",
-    },
-  ])
+  const [dispatches, setDispatches] = useState([])
+  const [agences, setAgences] = useState([])
+  const [nouvelleAgence, setNouvelleAgence] = useState("")
+  const [filtreDesignation, setFiltreDesignation] = useState("")
 
   const [nouveauDispatch, setNouveauDispatch] = useState({
-    produitId: "",
-    departementId: "",
+    designation: "",
     quantite: "",
     date: new Date().toISOString().split("T")[0],
   })
 
   const [modalOuvert, setModalOuvert] = useState(false)
+  const [dispatchEdite, setDispatchEdite] = useState(null)
 
-  const getNomProduit = (produitId) => {
-    const produit = produits.find((p) => p.id === produitId)
-    return produit ? produit.designation : ""
-  }
+  // Ajouter useEffect pour charger les données du localStorage
+  useEffect(() => {
+    const dispatchesSauvegardees = localStorage.getItem("dispatches")
+    const agencesSauvegardees = localStorage.getItem("agences")
 
-  const getNomDepartement = (departementId) => {
-    const departement = departements.find((d) => d.id === departementId)
-    return departement ? departement.nom : ""
-  }
+    if (dispatchesSauvegardees) {
+      setDispatches(JSON.parse(dispatchesSauvegardees))
+    }
+
+    if (agencesSauvegardees) {
+      setAgences(JSON.parse(agencesSauvegardees))
+    }
+  }, [])
+
+  // Ajouter un script pour détecter si le tableau nécessite un défilement
+  useEffect(() => {
+    const checkTableScroll = () => {
+      const tableContainer = document.querySelector(".tableau-dispatche")
+      if (tableContainer) {
+        if (tableContainer.scrollWidth > tableContainer.clientWidth) {
+          tableContainer.classList.add("scrollable")
+        } else {
+          tableContainer.classList.remove("scrollable")
+        }
+      }
+    }
+
+    // Vérifier au chargement et lors du redimensionnement
+    checkTableScroll()
+    window.addEventListener("resize", checkTableScroll)
+
+    return () => {
+      window.removeEventListener("resize", checkTableScroll)
+    }
+  }, [dispatches, agences])
 
   const ouvrirModal = () => {
+    setDispatchEdite(null)
+    setNouveauDispatch({
+      designation: "",
+      quantite: "",
+      date: new Date().toISOString().split("T")[0],
+    })
+    setModalOuvert(true)
+  }
+
+  const ouvrirModalEdition = (dispatch) => {
+    setDispatchEdite(dispatch)
+    setNouveauDispatch({
+      designation: dispatch.designation,
+      quantite: dispatch.quantite,
+      date: dispatch.date,
+    })
     setModalOuvert(true)
   }
 
@@ -72,36 +87,97 @@ function Dispatche() {
     })
   }
 
-  const ajouterDispatch = () => {
-    const nouveauId = dispatches.length > 0 ? Math.max(...dispatches.map((d) => d.id)) + 1 : 1
+  // Fonction pour ajouter ou modifier un dispatche
+  const sauvegarderDispatch = () => {
+    if (dispatchEdite) {
+      // Mise à jour d'un dispatche existant
+      const dispatchesUpdated = dispatches.map((d) =>
+        d.id === dispatchEdite.id
+          ? {
+              ...d,
+              designation: nouveauDispatch.designation,
+              quantite: Number.parseInt(nouveauDispatch.quantite),
+              date: nouveauDispatch.date,
+            }
+          : d,
+      )
+      setDispatches(dispatchesUpdated)
+      localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
+    } else {
+      // Ajout d'un nouveau dispatche
+      const nouveauId = dispatches.length > 0 ? Math.max(...dispatches.map((d) => d.id)) + 1 : 1
 
-    const dispatch = {
-      id: nouveauId,
-      produitId: Number.parseInt(nouveauDispatch.produitId),
-      departementId: Number.parseInt(nouveauDispatch.departementId),
-      quantite: Number.parseInt(nouveauDispatch.quantite),
-      date: nouveauDispatch.date,
-      status: "En attente",
+      const dispatch = {
+        id: nouveauId,
+        designation: nouveauDispatch.designation,
+        quantite: Number.parseInt(nouveauDispatch.quantite),
+        date: nouveauDispatch.date,
+        consommations: agences.map((agence) => ({ agenceId: agence.id, quantite: 0 })),
+      }
+
+      const dispatchesUpdated = [...dispatches, dispatch]
+      setDispatches(dispatchesUpdated)
+      localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
     }
 
-    setDispatches([...dispatches, dispatch])
-
-    // Réinitialiser le formulaire
+    // Réinitialiser le formulaire et fermer le modal
     setNouveauDispatch({
-      produitId: "",
-      departementId: "",
+      designation: "",
       quantite: "",
       date: new Date().toISOString().split("T")[0],
     })
-
     fermerModal()
   }
 
-  const changerStatus = (id, nouveauStatus) => {
-    setDispatches(
-      dispatches.map((dispatch) => (dispatch.id === id ? { ...dispatch, status: nouveauStatus } : dispatch)),
-    )
+  // Ajouter une nouvelle agence
+  const ajouterAgence = () => {
+    if (!nouvelleAgence.trim()) return
+
+    const nouvelleAgenceObj = {
+      id: agences.length > 0 ? Math.max(...agences.map((a) => a.id)) + 1 : 1,
+      nom: nouvelleAgence,
+    }
+
+    // Mettre à jour la liste des agences
+    const agencesUpdated = [...agences, nouvelleAgenceObj]
+    setAgences(agencesUpdated)
+    localStorage.setItem("agences", JSON.stringify(agencesUpdated))
+
+    // Mettre à jour les dispatches pour inclure la nouvelle agence
+    const dispatchesUpdated = dispatches.map((dispatch) => ({
+      ...dispatch,
+      consommations: [...(dispatch.consommations || []), { agenceId: nouvelleAgenceObj.id, quantite: 0 }],
+    }))
+    setDispatches(dispatchesUpdated)
+    localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
+
+    // Réinitialiser le champ
+    setNouvelleAgence("")
   }
+
+  // Mettre à jour la consommation d'une agence
+  const mettreAJourConsommation = (dispatchId, agenceId, quantite) => {
+    const dispatchesUpdated = dispatches.map((dispatch) => {
+      if (dispatch.id === dispatchId) {
+        const consommationsUpdated = dispatch.consommations
+          ? dispatch.consommations.map((c) =>
+              c.agenceId === agenceId ? { ...c, quantite: Number.parseInt(quantite) || 0 } : c,
+            )
+          : [{ agenceId, quantite: Number.parseInt(quantite) || 0 }]
+
+        return { ...dispatch, consommations: consommationsUpdated }
+      }
+      return dispatch
+    })
+
+    setDispatches(dispatchesUpdated)
+    localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
+  }
+
+  // Filtrer les dispatches par désignation
+  const dispatchesFiltres = dispatches.filter((dispatch) =>
+    dispatch.designation.toLowerCase().includes(filtreDesignation.toLowerCase()),
+  )
 
   return (
     <div className="page-dispatche">
@@ -110,94 +186,116 @@ function Dispatche() {
       <div className="section-dispatche">
         <div className="entete-section">
           <h2>Liste des Dispatches</h2>
-          <button className="bouton-ajouter" onClick={ouvrirModal}>
-            Nouveau Dispatche
-          </button>
+          <div className="actions-entete">
+            <div className="champ-recherche-wrapper">
+              <Search size={18} className="icone-recherche" />
+              <input
+                type="text"
+                placeholder="Filtrer par désignation..."
+                value={filtreDesignation}
+                onChange={(e) => setFiltreDesignation(e.target.value)}
+                className="champ-filtre"
+              />
+            </div>
+            <div className="ajout-agence">
+              <input
+                type="text"
+                placeholder="Nom de la nouvelle agence"
+                value={nouvelleAgence}
+                onChange={(e) => setNouvelleAgence(e.target.value)}
+                className="champ-nouvelle-agence"
+              />
+              <button className="bouton-ajouter-agence" onClick={ajouterAgence} disabled={!nouvelleAgence.trim()}>
+                <Plus size={16} /> Ajouter Agence
+              </button>
+            </div>
+            <button className="bouton-ajouter" onClick={ouvrirModal}>
+              <Plus size={16} /> Ajouter
+            </button>
+          </div>
         </div>
 
-        <div className="tableau-dispatche">
-          <table>
-            <thead>
-              <tr>
-                <th>Produit</th>
-                <th>Département</th>
-                <th>Quantité</th>
-                <th>Date</th>
-                <th>Statut</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dispatches.map((dispatch) => (
-                <tr key={dispatch.id}>
-                  <td>{getNomProduit(dispatch.produitId)}</td>
-                  <td>{getNomDepartement(dispatch.departementId)}</td>
-                  <td>{dispatch.quantite}</td>
-                  <td>{dispatch.date}</td>
-                  <td>
-                    <span className={`statut-${dispatch.status.toLowerCase().replace(" ", "-")}`}>
-                      {dispatch.status}
-                    </span>
-                  </td>
-                  <td className="actions-cellule">
-                    {dispatch.status === "En attente" && (
-                      <>
-                        <button className="bouton-livrer" onClick={() => changerStatus(dispatch.id, "Livré")}>
-                          Marquer comme livré
-                        </button>
-                        <button className="bouton-annuler" onClick={() => changerStatus(dispatch.id, "Annulé")}>
-                          Annuler
-                        </button>
-                      </>
-                    )}
-                  </td>
+        <div className="tableau-dispatche-wrapper">
+          <div className="tableau-dispatche">
+            <table>
+              <thead>
+                <tr>
+                  <th>Désignation</th>
+                  <th>Quantité</th>
+                  {agences.length > 0 && <th colSpan={agences.length}>Consommations des agences</th>}
+                  <th>Date</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+                {agences.length > 0 && (
+                  <tr>
+                    <th></th>
+                    <th></th>
+                    {agences.map((agence) => (
+                      <th key={agence.id}>{agence.nom}</th>
+                    ))}
+                    <th></th>
+                    <th></th>
+                  </tr>
+                )}
+              </thead>
+              <tbody>
+                {dispatchesFiltres.length > 0 ? (
+                  dispatchesFiltres.map((dispatch) => (
+                    <tr key={dispatch.id}>
+                      <td>{dispatch.designation}</td>
+                      <td>{dispatch.quantite}</td>
+                      {agences.map((agence) => {
+                        const consommation = dispatch.consommations?.find((c) => c.agenceId === agence.id)
+                        return (
+                          <td key={`${dispatch.id}-${agence.id}`}>
+                            <input
+                              type="number"
+                              min="0"
+                              max={dispatch.quantite}
+                              value={consommation?.quantite || 0}
+                              onChange={(e) => mettreAJourConsommation(dispatch.id, agence.id, e.target.value)}
+                              className="input-consommation"
+                            />
+                          </td>
+                        )
+                      })}
+                      <td>{dispatch.date}</td>
+                      <td className="actions-cellule">
+                        <button className="bouton-modifier" onClick={() => ouvrirModalEdition(dispatch)}>
+                          <Edit size={14} /> Modifier
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={agences.length > 0 ? agences.length + 4 : 4} className="no-data">
+                      Aucun dispatche trouvé. Utilisez le bouton "Ajouter" pour en créer un.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {modalOuvert && (
         <div className="modal-overlay">
           <div className="modal-contenu">
-            <h2>Nouveau Dispatche</h2>
+            <h2>{dispatchEdite ? "Modifier" : "Ajouter"} un dispatche</h2>
 
             <div className="formulaire-modal">
               <div className="groupe-champ">
-                <label htmlFor="produitId">Produit</label>
-                <select
-                  id="produitId"
-                  name="produitId"
-                  value={nouveauDispatch.produitId}
+                <label htmlFor="designation">Désignation</label>
+                <input
+                  id="designation"
+                  name="designation"
+                  type="text"
+                  value={nouveauDispatch.designation}
                   onChange={handleInputChange}
                   required
-                >
-                  <option value="">Sélectionner un produit</option>
-                  {produits.map((produit) => (
-                    <option key={produit.id} value={produit.id}>
-                      {produit.designation} (Disponible: {produit.quantite})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="groupe-champ">
-                <label htmlFor="departementId">Département</label>
-                <select
-                  id="departementId"
-                  name="departementId"
-                  value={nouveauDispatch.departementId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Sélectionner un département</option>
-                  {departements.map((departement) => (
-                    <option key={departement.id} value={departement.id}>
-                      {departement.nom}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div className="groupe-champ">
@@ -231,10 +329,10 @@ function Dispatche() {
                 </button>
                 <button
                   className="bouton-sauvegarder"
-                  onClick={ajouterDispatch}
-                  disabled={!nouveauDispatch.produitId || !nouveauDispatch.departementId || !nouveauDispatch.quantite}
+                  onClick={sauvegarderDispatch}
+                  disabled={!nouveauDispatch.designation || !nouveauDispatch.quantite}
                 >
-                  Ajouter
+                  {dispatchEdite ? "Modifier" : "Ajouter"}
                 </button>
               </div>
             </div>
@@ -246,3 +344,4 @@ function Dispatche() {
 }
 
 export default Dispatche
+

@@ -17,8 +17,8 @@
 
 .entete-section {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -27,8 +27,51 @@
   color: #333;
 }
 
+.actions-entete {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.champ-recherche-wrapper {
+  position: relative;
+  width: 250px;
+}
+
+.icone-recherche {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray);
+}
+
+.champ-filtre {
+  width: 100%;
+  padding: 0.6rem 0.6rem 0.6rem 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.ajout-agence {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.champ-nouvelle-agence {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
 /* Styles pour les boutons */
-.bouton-ajouter {
+.bouton-ajouter,
+.bouton-ajouter-agence {
   padding: 0.6rem 1.2rem;
   background-color: var(--primary); /* Rouge */
   color: white;
@@ -38,22 +81,102 @@
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.bouton-ajouter:hover {
+.bouton-ajouter:hover,
+.bouton-ajouter-agence:hover {
   background-color: var(--primary-hover); /* Rouge plus foncé */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
 }
 
-.tableau-dispatche {
-  overflow-x: auto;
+.bouton-ajouter:disabled,
+.bouton-ajouter-agence:disabled {
+  background-color: var(--gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+/* Améliorer le défilement horizontal du tableau */
+.tableau-dispatche-wrapper {
+  position: relative;
   margin-bottom: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tableau-dispatche {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray) transparent;
+  max-height: 70vh; /* Limiter la hauteur pour éviter de prendre tout l'écran */
+  overflow-y: auto; /* Permettre le défilement vertical si nécessaire */
+}
+
+.tableau-dispatche::-webkit-scrollbar {
+  height: 10px; /* Augmenter la hauteur pour faciliter le défilement */
+  width: 10px;
+}
+
+.tableau-dispatche::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.tableau-dispatche::-webkit-scrollbar-thumb {
+  background: var(--gray);
+  border-radius: 4px;
+}
+
+.tableau-dispatche::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-dark);
+}
+
+/* Indicateur de défilement */
+.tableau-dispatche::after {
+  content: "→";
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0.7;
+  animation: pulse 2s infinite;
+  pointer-events: none;
+  display: none; /* Caché par défaut */
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Afficher l'indicateur seulement si le contenu dépasse */
+.tableau-dispatche.scrollable::after {
+  display: block;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 800px; /* Force horizontal scroll on small screens */
 }
 
 th,
@@ -67,10 +190,32 @@ th {
   background-color: #f8f9fa;
   font-weight: 600;
   color: #495057;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 tbody tr:hover {
   background-color: #f8f9fa;
+}
+
+.input-consommation {
+  width: 60px;
+  padding: 0.4rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.input-consommation:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(229, 0, 0, 0.1);
+}
+
+.input-consommation:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
 }
 
 .statut-livré {
@@ -231,6 +376,13 @@ tbody tr:hover {
   box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
 }
 
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -241,6 +393,15 @@ tbody tr:hover {
 }
 
 @media (max-width: 768px) {
+  .actions-entete {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .champ-recherche-wrapper {
+    width: 100%;
+  }
+
   .actions-cellule {
     flex-direction: column;
   }
