@@ -8,8 +8,10 @@ import "../styles/Inscription.css"
 function Inscription() {
   const [nom, setNom] = useState("")
   const [email, setEmail] = useState("")
+  const [agence, setAgence] = useState("")
   const [motDePasse, setMotDePasse] = useState("")
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("")
+
   const [erreur, setErreur] = useState("")
 
   const { inscription } = useAuth()
@@ -67,6 +69,18 @@ function Inscription() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
+              className="champ-saisie"
+            />
+          </div>
+
+          <div className="groupe-champ">
+            <label htmlFor="agence">Numero {`d'agence`}</label>
+            <input
+              id="agence"
+              type="agence"
+              value={agence}
+              onChange={(e) => setAgence(e.target.value)}
               required
               className="champ-saisie"
             />
