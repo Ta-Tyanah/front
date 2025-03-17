@@ -7,6 +7,8 @@ import Inventaire from "./pages/Inventaire"
 import Dispatche from "./pages/Dispatche"
 import Immobiliers from "./pages/Immobiliers"
 import Profil from "./pages/Profil"
+import Utilisateurs from "./pages/Utilisateurs"
+import AccueilDashboard from "./pages/AccueilDashboard"
 import { AuthProvider } from "./contexte/AuthContexte"
 import { StockProvider } from "./contexte/StockContexte"
 
@@ -18,14 +20,16 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/connexion" />} />
           <Route path="/connexion" element={<Connexion />} />
+          <Route path="/AccueilDashboard" element={<AccueilDashboard />} /> 
           <Route path="/inscription" element={<Inscription />} />
+          <Route path="/profil" element={<Profil />} />
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Stock />} />
             <Route path="stock" element={<Stock />} />
             <Route path="inventaire" element={<Inventaire />} />
             <Route path="dispatche" element={<Dispatche />} />
             <Route path="immobiliers" element={<Immobiliers />} />
-            <Route path="profil" element={<Profil />} />
+            <Route path="utilisateurs" element={<Utilisateurs />} />
           </Route>
         </Routes>
       </Router>

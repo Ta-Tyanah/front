@@ -5,20 +5,25 @@ import "../styles/Dashboard.css"
 import { useState, useEffect } from "react"
 
 function AccueilDashboard() {
-  const [statistiques] = useOutletContext()
+  const statistiques = useOutletContext() || {
+    totalProduits: 0,
+    totalCategories: 0,
+    totalDispatches: 0,
+    totalImmobiliers: 0,
+  }
 
-  // Remplacer les activités récentes par un tableau vide
-  const activitesRecentesInit = []
+  // État pour les activités récentes
+  const [activitesRecentes, setActivitesRecentes] = useState([])
 
-  // Ajouter un état pour les activités récentes
-  const [activitesRecentes, setActivitesRecentes] = useState(activitesRecentesInit)
-
-  // Ajouter useEffect pour charger les activités récentes depuis localStorage
+  // Charger les activités récentes depuis localStorage
   useEffect(() => {
-    const activitesSauvegardees = localStorage.getItem("activitesRecentes")
-
-    if (activitesSauvegardees) {
-      setActivitesRecentes(JSON.parse(activitesSauvegardees))
+    try {
+      const activitesSauvegardees = localStorage.getItem("activitesRecentes")
+      if (activitesSauvegardees) {
+        setActivitesRecentes(JSON.parse(activitesSauvegardees))
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des activités récentes :", error)
     }
   }, [])
 
@@ -64,7 +69,6 @@ function AccueilDashboard() {
         <div className="graphique">
           <h3>Évolution du stock</h3>
           <div className="placeholder-graphique">
-            {/* Ici vous pourriez intégrer un graphique avec une bibliothèque comme Chart.js */}
             <div
               style={{
                 height: "250px",
@@ -77,7 +81,7 @@ function AccueilDashboard() {
                 fontWeight: "bold",
               }}
             >
-              Graphique {`d'évolution`} du stock
+              Graphique d'évolution du stock
             </div>
           </div>
         </div>
@@ -85,7 +89,6 @@ function AccueilDashboard() {
         <div className="graphique">
           <h3>Répartition par catégorie</h3>
           <div className="placeholder-graphique">
-            {/* Ici vous pourriez intégrer un graphique circulaire */}
             <div
               style={{
                 height: "250px",
@@ -121,8 +124,8 @@ function AccueilDashboard() {
             </thead>
             <tbody>
               {activitesRecentes.length > 0 ? (
-                activitesRecentes.map((activite) => (
-                  <tr key={activite.id}>
+                activitesRecentes.map((activite, index) => (
+                  <tr key={activite.id || index}>
                     <td>{activite.type}</td>
                     <td>{activite.description}</td>
                     <td>{activite.date}</td>
@@ -149,4 +152,3 @@ function AccueilDashboard() {
 }
 
 export default AccueilDashboard
-

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { NavLink, useLocation } from "react-router-dom"
-import { LayoutDashboard, Package, ClipboardList, Truck, Building2, ChevronDown, ChevronUp } from "lucide-react"
+import { LayoutDashboard, Package, ClipboardList, Truck, Building2, ChevronDown, ChevronUp, Users } from "lucide-react"
 
 function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
   const [sousMenuOuvert, setSousMenuOuvert] = useState(true)
@@ -35,7 +35,7 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
         <div className="groupe-menu">
           <h3 className="titre-menu">Tableau de bord</h3>
           <NavLink
-            to="/dashboard"
+            to="/AccueilDashboard"
             end
             className={({ isActive }) => (isActive ? "lien-actif" : "")}
             onClick={fermerMenuMobile}
@@ -100,6 +100,20 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
               <Building2 size={18} />
             </span>
             <span className="texte-menu-item">Immobiliers</span>
+          </NavLink>
+        </div>
+
+        <div className="groupe-menu">
+          <h3 className="titre-menu">Gestion des utilisateurs</h3>
+          <NavLink
+            to="/dashboard/utilisateurs"
+            className={({ isActive }) => (isActive ? "lien-actif" : "")}
+            onClick={fermerMenuMobile}
+          >
+            <span className="icone-menu-item">
+              <Users size={18} />
+            </span>
+            <span className="texte-menu-item">Utilisateurs</span>
           </NavLink>
         </div>
       </nav>

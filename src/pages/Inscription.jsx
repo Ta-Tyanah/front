@@ -115,9 +115,6 @@ function Inscription() {
           </button>
         </form>
 
-        <p className="lien-connexion">
-          Déjà un compte? <Link to="/connexion">Se connecter</Link>
-        </p>
       </div>
     </div>
   )

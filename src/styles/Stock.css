@@ -15,6 +15,7 @@
   margin-bottom: 2rem;
 }
 
+/* Ajouter les styles pour les boîtes de catégorie cliquables et le modal de détail */
 .boite-categorie {
   background-color: #ffffff;
   border-radius: 8px;
@@ -27,6 +28,7 @@
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .boite-categorie::before {
@@ -40,7 +42,6 @@
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
-  overflow-x: auto;
 }
 
 .boite-categorie:hover::before {
@@ -50,6 +51,21 @@
 .boite-categorie:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.voir-details {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.boite-categorie:hover .voir-details {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .icone-categorie {
@@ -198,18 +214,6 @@
   background: rgba(255, 255, 255, 0.2);
   transition: transform 0.6s ease;
   transform: skewX(-15deg);
-}
-
-.bouton-ajo255,
-255,
-0.2 
-) 
-;
-transition: transform 0.6s ease
-;
-transform: skewX(-15deg
-)
-;
 }
 
 .bouton-ajouter:hover::before {
@@ -601,6 +605,87 @@ tbody tr:hover {
   }
 }
 
+/* Modal de détail */
+.modal-large {
+  max-width: 800px;
+  width: 90%;
+}
+
+.entete-modal-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filtres-date {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.groupe-filtre {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.groupe-filtre label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+  color: var(--gray);
+}
+
+.groupe-filtre select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 0.9rem;
+}
+
+.tableau-detail-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tableau-detail {
+  width: 100%;
+}
+
+.article-row {
+  transition: all 0.3s ease;
+}
+
+.article-row:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.bouton-fermer {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--gray);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bouton-fermer:hover {
+  background-color: var(--gray-dark);
+  transform: translateY(-2px);
+}
+
 /* Améliorer les alertes flottantes */
 .alerte-flottante {
   position: fixed;
@@ -760,5 +845,57 @@ tbody tr:hover {
   background-color: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(229, 0, 0, 0.3);
+}
+
+/* Améliorer le défilement horizontal */
+.tableau-stock,
+.tableau-detail {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray) transparent;
+}
+
+.tableau-stock::-webkit-scrollbar,
+.tableau-detail::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+.tableau-stock::-webkit-scrollbar-track,
+.tableau-detail::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.tableau-stock::-webkit-scrollbar-thumb,
+.tableau-detail::-webkit-scrollbar-thumb {
+  background: var(--gray);
+  border-radius: 4px;
+}
+
+.tableau-stock::-webkit-scrollbar-thumb:hover,
+.tableau-detail::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-dark);
+}
+
+@media (max-width: 768px) {
+  .entete-modal-detail {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filtres-date {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .groupe-filtre {
+    width: 100%;
+  }
+
+  .groupe-filtre select {
+    flex: 1;
+  }
 }
 

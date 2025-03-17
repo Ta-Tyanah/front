@@ -34,8 +34,14 @@ export const StockProvider = ({ children }) => {
 
     if (stockSauvegarde) {
       const stockParse = JSON.parse(stockSauvegarde)
-      setLignesStock(stockParse)
-      mettreAJourQuantitesCategories(stockParse)
+      // Ajouter les champs dateEntree et dateSortie s'ils n'existent pas
+      const stockAvecDates = stockParse.map((ligne) => ({
+        ...ligne,
+        dateEntree: ligne.dateEntree || ligne.stockActuel.date,
+        dateSortie: ligne.dateSortie || "",
+      }))
+      setLignesStock(stockAvecDates)
+      mettreAJourQuantitesCategories(stockAvecDates)
     }
 
     if (inventaireSauvegarde) {
@@ -148,6 +154,8 @@ export const StockProvider = ({ children }) => {
       categorie: ligne.categorie,
       date: ligne.stockActuel.date,
       quantite: ligne.stockActuel.quantite,
+      dateEntree: ligne.dateEntree,
+      dateSortie: ligne.dateSortie,
     }))
 
     setInventaire(nouvelInventaire)

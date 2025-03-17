@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useStock } from "../contexte/StockContexte"
 import "../styles/Stock.css"
-import { Computer, Brush, Package, FileText, Plus, Edit, Trash, Save } from "lucide-react"
+import { Computer, Brush, Package, FileText, Plus, Edit, Trash, Save, Calendar, Filter } from "lucide-react"
 
 function Stock() {
   const {
@@ -22,6 +22,11 @@ function Stock() {
   const [nouvelleQuantite, setNouvelleQuantite] = useState("")
   const [nouveauPrixUnitaire, setNouveauPrixUnitaire] = useState("")
   const [modalOuverte, setModalOuverte] = useState(false)
+  const [categorieSelectionnee, setCategorieSelectionnee] = useState(null)
+  const [modalDetailOuverte, setModalDetailOuverte] = useState(false)
+  const [filtreMois, setFiltreMois] = useState("")
+  const [filtreAnnee, setFiltreAnnee] = useState("")
+  const tableauRef = useRef(null)
 
   // Obtenir l'icône correspondant à la catégorie
   const getIconeCategorie = (nomCategorie) => {
@@ -72,6 +77,20 @@ function Stock() {
     setModalOuverte(false)
   }
 
+  // Ouvrir le modal de détail de catégorie
+  const ouvrirModalDetail = (categorie) => {
+    setCategorieSelectionnee(categorie)
+    setModalDetailOuverte(true)
+  }
+
+  // Fermer le modal de détail
+  const fermerModalDetail = () => {
+    setModalDetailOuverte(false)
+    setCategorieSelectionnee(null)
+    setFiltreMois("")
+    setFiltreAnnee("")
+  }
+
   // Sauvegarder les modifications
   const sauvegarderLigne = () => {
     const quantite = Number.parseInt(nouvelleQuantite, 10)
@@ -109,6 +128,8 @@ function Stock() {
           prixUnitaire,
           montant,
         },
+        dateEntree: new Date().toISOString().split("T")[0],
+        dateSortie: "",
       }
 
       ajouterLigneStock(nouvelleLigne)
@@ -202,10 +223,27 @@ function Stock() {
     afficherMessage(`Inventaire enregistré avec succès! ${nouvelInventaire.length} articles ajoutés.`, "succes")
   }
 
+  // Filtrer les articles par catégorie
+  const getArticlesParCategorie = (nomCategorie) => {
+    return lignesStock.filter((ligne) => ligne.categorie === nomCategorie)
+  }
+
+  // Filtrer les articles par mois et année
+  const filtrerArticlesParDate = (articles) => {
+    if (!filtreMois && !filtreAnnee) return articles
+
+    return articles.filter((article) => {
+      const dateEntree = new Date(article.dateEntree)
+      const moisMatch = !filtreMois || (dateEntree.getMonth() + 1).toString() === filtreMois
+      const anneeMatch = !filtreAnnee || dateEntree.getFullYear().toString() === filtreAnnee
+      return moisMatch && anneeMatch
+    })
+  }
+
   // Ajouter un script pour détecter si le tableau nécessite un défilement
   useEffect(() => {
     const checkTableScroll = () => {
-      const tableContainer = document.querySelector(".tableau-stock")
+      const tableContainer = tableauRef.current
       if (tableContainer) {
         if (tableContainer.scrollWidth > tableContainer.clientWidth) {
           tableContainer.classList.add("scrollable")
@@ -231,10 +269,11 @@ function Stock() {
       <div className="categories-stock">
         {categoriesStock.length > 0 ? (
           categoriesStock.map((categorie) => (
-            <div key={categorie.id} className="boite-categorie">
+            <div key={categorie.id} className="boite-categorie" onClick={() => ouvrirModalDetail(categorie)}>
               <div className="icone-categorie">{getIconeCategorie(categorie.nom)}</div>
               <h3>{categorie.nom}</h3>
               <p className="quantite-categorie">{categorie.quantite} articles</p>
+              <div className="voir-details">Voir détails</div>
             </div>
           ))
         ) : (
@@ -264,7 +303,7 @@ function Stock() {
         </div>
 
         <div className="tableau-stock-wrapper">
-          <div className="tableau-stock">
+          <div className="tableau-stock" ref={tableauRef}>
             <table>
               <thead>
                 <tr>
@@ -418,6 +457,88 @@ function Stock() {
                   Sauvegarder
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalDetailOuverte && categorieSelectionnee && (
+        <div className="modal-overlay">
+          <div className="modal-contenu modal-large">
+            <div className="entete-modal-detail">
+              <h2>Détails de la catégorie: {categorieSelectionnee.nom}</h2>
+              <div className="filtres-date">
+                <div className="groupe-filtre">
+                  <label htmlFor="filtreMois">
+                    <Calendar size={16} /> Mois:
+                  </label>
+                  <select id="filtreMois" value={filtreMois} onChange={(e) => setFiltreMois(e.target.value)}>
+                    <option value="">Tous les mois</option>
+                    <option value="1">Janvier</option>
+                    <option value="2">Février</option>
+                    <option value="3">Mars</option>
+                    <option value="4">Avril</option>
+                    <option value="5">Mai</option>
+                    <option value="6">Juin</option>
+                    <option value="7">Juillet</option>
+                    <option value="8">Août</option>
+                    <option value="9">Septembre</option>
+                    <option value="10">Octobre</option>
+                    <option value="11">Novembre</option>
+                    <option value="12">Décembre</option>
+                  </select>
+                </div>
+                <div className="groupe-filtre">
+                  <label htmlFor="filtreAnnee">
+                    <Filter size={16} /> Année:
+                  </label>
+                  <select id="filtreAnnee" value={filtreAnnee} onChange={(e) => setFiltreAnnee(e.target.value)}>
+                    <option value="">Toutes les années</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="tableau-detail-wrapper">
+              <div className="tableau-detail">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Article</th>
+                      <th>Quantité disponible</th>
+                      <th>Date d'entrée</th>
+                      <th>Date de sortie</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtrerArticlesParDate(getArticlesParCategorie(categorieSelectionnee.nom)).length > 0 ? (
+                      filtrerArticlesParDate(getArticlesParCategorie(categorieSelectionnee.nom)).map((article) => (
+                        <tr key={article.id} className="article-row">
+                          <td>{article.designation}</td>
+                          <td>{article.stockActuel.quantite}</td>
+                          <td>{article.dateEntree || "N/A"}</td>
+                          <td>{article.dateSortie || "N/A"}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="no-data">
+                          Aucun article trouvé pour cette catégorie avec les filtres sélectionnés.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="actions-modal">
+              <button className="bouton-fermer" onClick={fermerModalDetail}>
+                Fermer
+              </button>
             </div>
           </div>
         </div>
