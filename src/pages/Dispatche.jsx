@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import "../styles/Dispatche.css"
-import { Search, Plus, Edit } from "lucide-react"
+import { Search, Plus, Edit, Trash, Save } from "lucide-react"
 
 function Dispatche() {
   // État pour les dispatches normaux
@@ -10,18 +10,21 @@ function Dispatche() {
   const [agences, setAgences] = useState([])
   const [nouvelleAgence, setNouvelleAgence] = useState("")
   const [filtreDesignation, setFiltreDesignation] = useState("")
+  const [dispatchEnEdition, setDispatchEnEdition] = useState(null)
 
   // État pour les Western Union
   const [westernUnions, setWesternUnions] = useState([])
   const [agencesWU, setAgencesWU] = useState([])
   const [nouvelleAgenceWU, setNouvelleAgenceWU] = useState("")
   const [filtreWesternUnion, setFiltreWesternUnion] = useState("")
+  const [westernUnionEnEdition, setWesternUnionEnEdition] = useState(null)
 
   // État pour les Directions
   const [directions, setDirections] = useState([])
   const [agencesDir, setAgencesDir] = useState([])
   const [nouvelleAgenceDir, setNouvelleAgenceDir] = useState("")
   const [filtreDirection, setFiltreDirection] = useState("")
+  const [directionEnEdition, setDirectionEnEdition] = useState(null)
 
   // État pour les modals
   const [nouveauDispatch, setNouveauDispatch] = useState({
@@ -178,6 +181,9 @@ function Dispatche() {
       date: new Date().toISOString().split("T")[0],
     })
     fermerModal()
+
+    // Afficher un message de succès
+    afficherMessage(dispatchEdite ? "Dispatche modifié avec succès!" : "Dispatche ajouté avec succès!", "succes")
   }
 
   // Ajouter une nouvelle agence
@@ -204,6 +210,69 @@ function Dispatche() {
 
     // Réinitialiser le champ
     setNouvelleAgence("")
+
+    // Afficher un message de succès
+    afficherMessage("Agence ajoutée avec succès!", "succes")
+  }
+
+  // Supprimer une agence
+  const supprimerAgence = (agenceId) => {
+    // Créer une alerte de confirmation moderne
+    const alerteElement = document.createElement("div")
+    alerteElement.className = "alerte-confirmation"
+    alerteElement.innerHTML = `
+    <div class="alerte-contenu">
+      <div class="alerte-titre">Confirmer la suppression</div>
+      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer cette agence ?</div>
+      <div class="alerte-actions">
+        <button class="bouton-annuler-alerte">Annuler</button>
+        <button class="bouton-confirmer-alerte">Supprimer</button>
+      </div>
+    </div>
+  `
+
+    document.body.appendChild(alerteElement)
+
+    // Animation d'entrée
+    setTimeout(() => {
+      alerteElement.classList.add("visible")
+    }, 10)
+
+    // Gérer les actions
+    const boutonAnnuler = alerteElement.querySelector(".bouton-annuler-alerte")
+    const boutonConfirmer = alerteElement.querySelector(".bouton-confirmer-alerte")
+
+    boutonAnnuler.addEventListener("click", () => {
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+      }, 300)
+    })
+
+    boutonConfirmer.addEventListener("click", () => {
+      // Supprimer l'agence de la liste
+      const agencesUpdated = agences.filter((a) => a.id !== agenceId)
+      setAgences(agencesUpdated)
+      localStorage.setItem("agences", JSON.stringify(agencesUpdated))
+
+      // Mettre à jour les dispatches pour retirer cette agence
+      const dispatchesUpdated = dispatches.map((dispatch) => ({
+        ...dispatch,
+        consommations: dispatch.consommations.filter((c) => c.agenceId !== agenceId),
+      }))
+      setDispatches(dispatchesUpdated)
+      localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
+
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+
+        // Afficher un message de succès
+        afficherMessage("Agence supprimée avec succès!", "succes")
+      }, 300)
+    })
   }
 
   // Mettre à jour la consommation d'une agence
@@ -223,6 +292,69 @@ function Dispatche() {
 
     setDispatches(dispatchesUpdated)
     localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
+  }
+
+  // Activer/désactiver le mode édition pour un dispatch
+  const toggleEditionDispatch = (dispatchId) => {
+    if (dispatchEnEdition === dispatchId) {
+      setDispatchEnEdition(null)
+      // Afficher un message de succès
+      afficherMessage("Modifications enregistrées", "succes")
+    } else {
+      setDispatchEnEdition(dispatchId)
+    }
+  }
+
+  // Supprimer un dispatch
+  const supprimerDispatch = (dispatchId) => {
+    // Créer une alerte de confirmation moderne
+    const alerteElement = document.createElement("div")
+    alerteElement.className = "alerte-confirmation"
+    alerteElement.innerHTML = `
+    <div class="alerte-contenu">
+      <div class="alerte-titre">Confirmer la suppression</div>
+      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer ce dispatche ?</div>
+      <div class="alerte-actions">
+        <button class="bouton-annuler-alerte">Annuler</button>
+        <button class="bouton-confirmer-alerte">Supprimer</button>
+      </div>
+    </div>
+  `
+
+    document.body.appendChild(alerteElement)
+
+    // Animation d'entrée
+    setTimeout(() => {
+      alerteElement.classList.add("visible")
+    }, 10)
+
+    // Gérer les actions
+    const boutonAnnuler = alerteElement.querySelector(".bouton-annuler-alerte")
+    const boutonConfirmer = alerteElement.querySelector(".bouton-confirmer-alerte")
+
+    boutonAnnuler.addEventListener("click", () => {
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+      }, 300)
+    })
+
+    boutonConfirmer.addEventListener("click", () => {
+      // Supprimer le dispatch
+      const dispatchesUpdated = dispatches.filter((d) => d.id !== dispatchId)
+      setDispatches(dispatchesUpdated)
+      localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
+
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+
+        // Afficher un message de succès
+        afficherMessage("Dispatche supprimé avec succès!", "succes")
+      }, 300)
+    })
   }
 
   // Fonctions pour les Western Union
@@ -298,6 +430,12 @@ function Dispatche() {
       date: new Date().toISOString().split("T")[0],
     })
     fermerModalWesternUnion()
+
+    // Afficher un message de succès
+    afficherMessage(
+      westernUnionEdite ? "Western Union modifié avec succès!" : "Western Union ajouté avec succès!",
+      "succes",
+    )
   }
 
   // Ajouter une nouvelle agence pour Western Union
@@ -324,6 +462,69 @@ function Dispatche() {
 
     // Réinitialiser le champ
     setNouvelleAgenceWU("")
+
+    // Afficher un message de succès
+    afficherMessage("Agence Western Union ajoutée avec succès!", "succes")
+  }
+
+  // Supprimer une agence Western Union
+  const supprimerAgenceWU = (agenceId) => {
+    // Créer une alerte de confirmation moderne
+    const alerteElement = document.createElement("div")
+    alerteElement.className = "alerte-confirmation"
+    alerteElement.innerHTML = `
+    <div class="alerte-contenu">
+      <div class="alerte-titre">Confirmer la suppression</div>
+      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer cette agence Western Union ?</div>
+      <div class="alerte-actions">
+        <button class="bouton-annuler-alerte">Annuler</button>
+        <button class="bouton-confirmer-alerte">Supprimer</button>
+      </div>
+    </div>
+  `
+
+    document.body.appendChild(alerteElement)
+
+    // Animation d'entrée
+    setTimeout(() => {
+      alerteElement.classList.add("visible")
+    }, 10)
+
+    // Gérer les actions
+    const boutonAnnuler = alerteElement.querySelector(".bouton-annuler-alerte")
+    const boutonConfirmer = alerteElement.querySelector(".bouton-confirmer-alerte")
+
+    boutonAnnuler.addEventListener("click", () => {
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+      }, 300)
+    })
+
+    boutonConfirmer.addEventListener("click", () => {
+      // Supprimer l'agence de la liste
+      const agencesUpdated = agencesWU.filter((a) => a.id !== agenceId)
+      setAgencesWU(agencesUpdated)
+      localStorage.setItem("agencesWU", JSON.stringify(agencesUpdated))
+
+      // Mettre à jour les Western Unions pour retirer cette agence
+      const westernUnionsUpdated = westernUnions.map((wu) => ({
+        ...wu,
+        consommations: wu.consommations.filter((c) => c.agenceId !== agenceId),
+      }))
+      setWesternUnions(westernUnionsUpdated)
+      localStorage.setItem("westernUnions", JSON.stringify(westernUnionsUpdated))
+
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+
+        // Afficher un message de succès
+        afficherMessage("Agence Western Union supprimée avec succès!", "succes")
+      }, 300)
+    })
   }
 
   // Mettre à jour la consommation d'une agence pour Western Union
@@ -343,6 +544,69 @@ function Dispatche() {
 
     setWesternUnions(westernUnionsUpdated)
     localStorage.setItem("westernUnions", JSON.stringify(westernUnionsUpdated))
+  }
+
+  // Activer/désactiver le mode édition pour un Western Union
+  const toggleEditionWesternUnion = (westernUnionId) => {
+    if (westernUnionEnEdition === westernUnionId) {
+      setWesternUnionEnEdition(null)
+      // Afficher un message de succès
+      afficherMessage("Modifications enregistrées", "succes")
+    } else {
+      setWesternUnionEnEdition(westernUnionId)
+    }
+  }
+
+  // Supprimer un Western Union
+  const supprimerWesternUnion = (westernUnionId) => {
+    // Créer une alerte de confirmation moderne
+    const alerteElement = document.createElement("div")
+    alerteElement.className = "alerte-confirmation"
+    alerteElement.innerHTML = `
+    <div class="alerte-contenu">
+      <div class="alerte-titre">Confirmer la suppression</div>
+      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer ce Western Union ?</div>
+      <div class="alerte-actions">
+        <button class="bouton-annuler-alerte">Annuler</button>
+        <button class="bouton-confirmer-alerte">Supprimer</button>
+      </div>
+    </div>
+  `
+
+    document.body.appendChild(alerteElement)
+
+    // Animation d'entrée
+    setTimeout(() => {
+      alerteElement.classList.add("visible")
+    }, 10)
+
+    // Gérer les actions
+    const boutonAnnuler = alerteElement.querySelector(".bouton-annuler-alerte")
+    const boutonConfirmer = alerteElement.querySelector(".bouton-confirmer-alerte")
+
+    boutonAnnuler.addEventListener("click", () => {
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+      }, 300)
+    })
+
+    boutonConfirmer.addEventListener("click", () => {
+      // Supprimer le Western Union
+      const westernUnionsUpdated = westernUnions.filter((wu) => wu.id !== westernUnionId)
+      setWesternUnions(westernUnionsUpdated)
+      localStorage.setItem("westernUnions", JSON.stringify(westernUnionsUpdated))
+
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+
+        // Afficher un message de succès
+        afficherMessage("Western Union supprimé avec succès!", "succes")
+      }, 300)
+    })
   }
 
   // Fonctions pour les Directions
@@ -418,6 +682,9 @@ function Dispatche() {
       date: new Date().toISOString().split("T")[0],
     })
     fermerModalDirection()
+
+    // Afficher un message de succès
+    afficherMessage(directionEditee ? "Direction modifiée avec succès!" : "Direction ajoutée avec succès!", "succes")
   }
 
   // Ajouter une nouvelle agence pour Direction
@@ -444,6 +711,69 @@ function Dispatche() {
 
     // Réinitialiser le champ
     setNouvelleAgenceDir("")
+
+    // Afficher un message de succès
+    afficherMessage("Agence Direction ajoutée avec succès!", "succes")
+  }
+
+  // Supprimer une agence Direction
+  const supprimerAgenceDir = (agenceId) => {
+    // Créer une alerte de confirmation moderne
+    const alerteElement = document.createElement("div")
+    alerteElement.className = "alerte-confirmation"
+    alerteElement.innerHTML = `
+    <div class="alerte-contenu">
+      <div class="alerte-titre">Confirmer la suppression</div>
+      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer cette agence Direction ?</div>
+      <div class="alerte-actions">
+        <button class="bouton-annuler-alerte">Annuler</button>
+        <button class="bouton-confirmer-alerte">Supprimer</button>
+      </div>
+    </div>
+  `
+
+    document.body.appendChild(alerteElement)
+
+    // Animation d'entrée
+    setTimeout(() => {
+      alerteElement.classList.add("visible")
+    }, 10)
+
+    // Gérer les actions
+    const boutonAnnuler = alerteElement.querySelector(".bouton-annuler-alerte")
+    const boutonConfirmer = alerteElement.querySelector(".bouton-confirmer-alerte")
+
+    boutonAnnuler.addEventListener("click", () => {
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+      }, 300)
+    })
+
+    boutonConfirmer.addEventListener("click", () => {
+      // Supprimer l'agence de la liste
+      const agencesUpdated = agencesDir.filter((a) => a.id !== agenceId)
+      setAgencesDir(agencesUpdated)
+      localStorage.setItem("agencesDir", JSON.stringify(agencesUpdated))
+
+      // Mettre à jour les Directions pour retirer cette agence
+      const directionsUpdated = directions.map((dir) => ({
+        ...dir,
+        consommations: dir.consommations.filter((c) => c.agenceId !== agenceId),
+      }))
+      setDirections(directionsUpdated)
+      localStorage.setItem("directions", JSON.stringify(directionsUpdated))
+
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+
+        // Afficher un message de succès
+        afficherMessage("Agence Direction supprimée avec succès!", "succes")
+      }, 300)
+    })
   }
 
   // Mettre à jour la consommation d'une agence pour Direction
@@ -464,6 +794,188 @@ function Dispatche() {
     setDirections(directionsUpdated)
     localStorage.setItem("directions", JSON.stringify(directionsUpdated))
   }
+
+  // Activer/désactiver le mode édition pour une Direction
+  const toggleEditionDirection = (directionId) => {
+    if (directionEnEdition === directionId) {
+      setDirectionEnEdition(null)
+      // Afficher un message de succès
+      afficherMessage("Modifications enregistrées", "succes")
+    } else {
+      setDirectionEnEdition(directionId)
+    }
+  }
+
+  // Supprimer une Direction
+  const supprimerDirection = (directionId) => {
+    // Créer une alerte de confirmation moderne
+    const alerteElement = document.createElement("div")
+    alerteElement.className = "alerte-confirmation"
+    alerteElement.innerHTML = `
+    <div class="alerte-contenu">
+      <div class="alerte-titre">Confirmer la suppression</div>
+      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer cette Direction ?</div>
+      <div class="alerte-actions">
+        <button class="bouton-annuler-alerte">Annuler</button>
+        <button class="bouton-confirmer-alerte">Supprimer</button>
+      </div>
+    </div>
+  `
+
+    document.body.appendChild(alerteElement)
+
+    // Animation d'entrée
+    setTimeout(() => {
+      alerteElement.classList.add("visible")
+    }, 10)
+
+    // Gérer les actions
+    const boutonAnnuler = alerteElement.querySelector(".bouton-annuler-alerte")
+    const boutonConfirmer = alerteElement.querySelector(".bouton-confirmer-alerte")
+
+    boutonAnnuler.addEventListener("click", () => {
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+      }, 300)
+    })
+
+    boutonConfirmer.addEventListener("click", () => {
+      // Supprimer la Direction
+      const directionsUpdated = directions.filter((dir) => dir.id !== directionId)
+      setDirections(directionsUpdated)
+      localStorage.setItem("directions", JSON.stringify(directionsUpdated))
+
+      // Animation de sortie
+      alerteElement.classList.remove("visible")
+      setTimeout(() => {
+        document.body.removeChild(alerteElement)
+
+        // Afficher un message de succès
+        afficherMessage("Direction supprimée avec succès!", "succes")
+      }, 300)
+    })
+  }
+
+  // Fonction pour afficher un message
+  const afficherMessage = (texte, type) => {
+    // Supprimer toute alerte existante
+    const alertesExistantes = document.querySelectorAll(".alerte-flottante")
+    alertesExistantes.forEach((alerte) => {
+      alerte.classList.add("disparition")
+      setTimeout(() => {
+        if (alerte.parentNode) {
+          alerte.parentNode.removeChild(alerte)
+        }
+      }, 300)
+    })
+
+    // Créer la nouvelle alerte
+    const messageElement = document.createElement("div")
+    messageElement.className = `alerte-flottante alerte-${type}`
+
+    // Icône en fonction du type
+    let icone = ""
+    if (type === "succes") {
+      icone = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+    } else if (type === "erreur") {
+      icone = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`
+    } else if (type === "info") {
+      icone = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+    }
+
+    messageElement.innerHTML = `
+    <div class="icone-alerte">${icone}</div>
+    <div class="texte-alerte">${texte}</div>
+    <button class="fermer-alerte">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  `
+
+    document.body.appendChild(messageElement)
+
+    // Ajouter l'animation d'entrée
+    setTimeout(() => {
+      messageElement.classList.add("visible")
+    }, 10)
+
+    // Ajouter l'événement pour fermer l'alerte
+    const boutonFermer = messageElement.querySelector(".fermer-alerte")
+    if (boutonFermer) {
+      boutonFermer.addEventListener("click", () => {
+        messageElement.classList.remove("visible")
+        messageElement.classList.add("disparition")
+        setTimeout(() => {
+          if (messageElement.parentNode) {
+            messageElement.parentNode.removeChild(messageElement)
+          }
+        }, 300)
+      })
+    }
+
+    // Supprimer l'alerte après 5 secondes
+    setTimeout(() => {
+      if (messageElement.parentNode) {
+        messageElement.classList.remove("visible")
+        messageElement.classList.add("disparition")
+        setTimeout(() => {
+          if (messageElement.parentNode) {
+            messageElement.parentNode.removeChild(messageElement)
+          }
+        }, 300)
+      }
+    }, 5000)
+  }
+
+  // État pour les listes déroulantes
+  const [listeAgencesOuverte, setListeAgencesOuverte] = useState(false)
+  const [listeAgencesWUOuverte, setListeAgencesWUOuverte] = useState(false)
+  const [listeAgencesDirOuverte, setListeAgencesDirOuverte] = useState(false)
+
+  // Fonction pour basculer l'affichage de la liste des agences
+  const toggleListeAgences = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setListeAgencesOuverte(!listeAgencesOuverte)
+    setListeAgencesWUOuverte(false)
+    setListeAgencesDirOuverte(false)
+  }
+
+  // Fonction pour basculer l'affichage de la liste des agences Western Union
+  const toggleListeAgencesWU = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setListeAgencesWUOuverte(!listeAgencesWUOuverte)
+    setListeAgencesOuverte(false)
+    setListeAgencesDirOuverte(false)
+  }
+
+  // Fonction pour basculer l'affichage de la liste des agences Direction
+  const toggleListeAgencesDir = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setListeAgencesDirOuverte(!listeAgencesDirOuverte)
+    setListeAgencesOuverte(false)
+    setListeAgencesWUOuverte(false)
+  }
+
+  // Fermer les listes si on clique ailleurs
+  useEffect(() => {
+    const fermerListesSiClicExterieur = () => {
+      setListeAgencesOuverte(false)
+      setListeAgencesWUOuverte(false)
+      setListeAgencesDirOuverte(false)
+    }
+
+    document.addEventListener("click", fermerListesSiClicExterieur)
+    return () => {
+      document.removeEventListener("click", fermerListesSiClicExterieur)
+    }
+  }, [])
 
   // Filtrer les dispatches par désignation
   const dispatchesFiltres = dispatches.filter((dispatch) =>
@@ -511,6 +1023,23 @@ function Dispatche() {
                 <Plus size={16} /> Ajouter Agence
               </button>
             </div>
+            {agences.length > 0 && (
+              <div className="dropdown-container" onClick={(e) => e.stopPropagation()}>
+                <button className="bouton-supprimer-liste" onClick={toggleListeAgences}>
+                  <Trash size={16} /> Supprimer Agence
+                </button>
+                {listeAgencesOuverte && (
+                  <div className="dropdown-menu">
+                    <div className="dropdown-header">Sélectionner une agence</div>
+                    {agences.map((agence) => (
+                      <div key={agence.id} className="dropdown-item" onClick={() => supprimerAgence(agence.id)}>
+                        {agence.nom}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <button className="bouton-ajouter" onClick={ouvrirModal}>
               <Plus size={16} /> Ajouter
             </button>
@@ -533,7 +1062,9 @@ function Dispatche() {
                     <th></th>
                     <th></th>
                     {agences.map((agence) => (
-                      <th key={agence.id}>{agence.nom}</th>
+                      <th key={agence.id} className="th-agence">
+                        {agence.nom}
+                      </th>
                     ))}
                     <th></th>
                     <th></th>
@@ -557,14 +1088,29 @@ function Dispatche() {
                               value={consommation?.quantite || 0}
                               onChange={(e) => mettreAJourConsommation(dispatch.id, agence.id, e.target.value)}
                               className="input-consommation"
+                              disabled={dispatchEnEdition !== dispatch.id}
                             />
                           </td>
                         )
                       })}
                       <td>{dispatch.date}</td>
                       <td className="actions-cellule">
-                        <button className="bouton-modifier" onClick={() => ouvrirModalEdition(dispatch)}>
-                          <Edit size={14} /> Modifier
+                        <button
+                          className={`bouton-modifier ${dispatchEnEdition === dispatch.id ? "actif" : ""}`}
+                          onClick={() => toggleEditionDispatch(dispatch.id)}
+                        >
+                          {dispatchEnEdition === dispatch.id ? (
+                            <>
+                              <Save size={14} /> Enregistrer
+                            </>
+                          ) : (
+                            <>
+                              <Edit size={14} /> Modifier
+                            </>
+                          )}
+                        </button>
+                        <button className="bouton-supprimer" onClick={() => supprimerDispatch(dispatch.id)}>
+                          <Trash size={14} /> Supprimer
                         </button>
                       </td>
                     </tr>
@@ -600,7 +1146,7 @@ function Dispatche() {
             <div className="ajout-agence">
               <input
                 type="text"
-                placeholder="Nom de nouvelle western union"
+                placeholder="Nom de la nouvelle agence"
                 value={nouvelleAgenceWU}
                 onChange={(e) => setNouvelleAgenceWU(e.target.value)}
                 className="champ-nouvelle-agence"
@@ -609,6 +1155,23 @@ function Dispatche() {
                 <Plus size={16} /> Ajouter Agence
               </button>
             </div>
+            {agencesWU.length > 0 && (
+              <div className="dropdown-container" onClick={(e) => e.stopPropagation()}>
+                <button className="bouton-supprimer-liste" onClick={toggleListeAgencesWU}>
+                  <Trash size={16} /> Supprimer Agence
+                </button>
+                {listeAgencesWUOuverte && (
+                  <div className="dropdown-menu">
+                    <div className="dropdown-header">Sélectionner une agence</div>
+                    {agencesWU.map((agence) => (
+                      <div key={agence.id} className="dropdown-item" onClick={() => supprimerAgenceWU(agence.id)}>
+                        {agence.nom}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <button className="bouton-ajouter" onClick={ouvrirModalWesternUnion}>
               <Plus size={16} /> Ajouter
             </button>
@@ -622,7 +1185,7 @@ function Dispatche() {
                 <tr>
                   <th>Désignation</th>
                   <th>Quantité</th>
-                  {agencesWU.length > 0 && <th colSpan={agencesWU.length}>Consommations des Western union</th>}
+                  {agencesWU.length > 0 && <th colSpan={agencesWU.length}>Consommations des agences</th>}
                   <th>Date</th>
                   <th>Actions</th>
                 </tr>
@@ -631,7 +1194,9 @@ function Dispatche() {
                     <th></th>
                     <th></th>
                     {agencesWU.map((agence) => (
-                      <th key={agence.id}>{agence.nom}</th>
+                      <th key={agence.id} className="th-agence">
+                        {agence.nom}
+                      </th>
                     ))}
                     <th></th>
                     <th></th>
@@ -655,6 +1220,7 @@ function Dispatche() {
                               value={consommation?.quantite || 0}
                               onChange={(e) => mettreAJourConsommationWU(westernUnion.id, agence.id, e.target.value)}
                               className="input-consommation"
+                              disabled={westernUnionEnEdition !== westernUnion.id}
                             />
                           </td>
                         )
@@ -662,10 +1228,21 @@ function Dispatche() {
                       <td>{westernUnion.date}</td>
                       <td className="actions-cellule">
                         <button
-                          className="bouton-modifier"
-                          onClick={() => ouvrirModalEditionWesternUnion(westernUnion)}
+                          className={`bouton-modifier ${westernUnionEnEdition === westernUnion.id ? "actif" : ""}`}
+                          onClick={() => toggleEditionWesternUnion(westernUnion.id)}
                         >
-                          <Edit size={14} /> Modifier
+                          {westernUnionEnEdition === westernUnion.id ? (
+                            <>
+                              <Save size={14} /> Enregistrer
+                            </>
+                          ) : (
+                            <>
+                              <Edit size={14} /> Modifier
+                            </>
+                          )}
+                        </button>
+                        <button className="bouton-supprimer" onClick={() => supprimerWesternUnion(westernUnion.id)}>
+                          <Trash size={14} /> Supprimer
                         </button>
                       </td>
                     </tr>
@@ -701,7 +1278,7 @@ function Dispatche() {
             <div className="ajout-agence">
               <input
                 type="text"
-                placeholder="Nom de la nouvelle direction"
+                placeholder="Nom de la nouvelle agence"
                 value={nouvelleAgenceDir}
                 onChange={(e) => setNouvelleAgenceDir(e.target.value)}
                 className="champ-nouvelle-agence"
@@ -710,6 +1287,23 @@ function Dispatche() {
                 <Plus size={16} /> Ajouter Agence
               </button>
             </div>
+            {agencesDir.length > 0 && (
+              <div className="dropdown-container" onClick={(e) => e.stopPropagation()}>
+                <button className="bouton-supprimer-liste" onClick={toggleListeAgencesDir}>
+                  <Trash size={16} /> Supprimer Agence
+                </button>
+                {listeAgencesDirOuverte && (
+                  <div className="dropdown-menu">
+                    <div className="dropdown-header">Sélectionner une agence</div>
+                    {agencesDir.map((agence) => (
+                      <div key={agence.id} className="dropdown-item" onClick={() => supprimerAgenceDir(agence.id)}>
+                        {agence.nom}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <button className="bouton-ajouter" onClick={ouvrirModalDirection}>
               <Plus size={16} /> Ajouter
             </button>
@@ -723,7 +1317,7 @@ function Dispatche() {
                 <tr>
                   <th>Désignation</th>
                   <th>Quantité</th>
-                  {agencesDir.length > 0 && <th colSpan={agencesDir.length}>Consommations des directions</th>}
+                  {agencesDir.length > 0 && <th colSpan={agencesDir.length}>Consommations des agences</th>}
                   <th>Date</th>
                   <th>Actions</th>
                 </tr>
@@ -732,7 +1326,9 @@ function Dispatche() {
                     <th></th>
                     <th></th>
                     {agencesDir.map((agence) => (
-                      <th key={agence.id}>{agence.nom}</th>
+                      <th key={agence.id} className="th-agence">
+                        {agence.nom}
+                      </th>
                     ))}
                     <th></th>
                     <th></th>
@@ -756,14 +1352,29 @@ function Dispatche() {
                               value={consommation?.quantite || 0}
                               onChange={(e) => mettreAJourConsommationDir(direction.id, agence.id, e.target.value)}
                               className="input-consommation"
+                              disabled={directionEnEdition !== direction.id}
                             />
                           </td>
                         )
                       })}
                       <td>{direction.date}</td>
                       <td className="actions-cellule">
-                        <button className="bouton-modifier" onClick={() => ouvrirModalEditionDirection(direction)}>
-                          <Edit size={14} /> Modifier
+                        <button
+                          className={`bouton-modifier ${directionEnEdition === direction.id ? "actif" : ""}`}
+                          onClick={() => toggleEditionDirection(direction.id)}
+                        >
+                          {directionEnEdition === direction.id ? (
+                            <>
+                              <Save size={14} /> Enregistrer
+                            </>
+                          ) : (
+                            <>
+                              <Edit size={14} /> Modifier
+                            </>
+                          )}
+                        </button>
+                        <button className="bouton-supprimer" onClick={() => supprimerDirection(direction.id)}>
+                          <Trash size={14} /> Supprimer
                         </button>
                       </td>
                     </tr>

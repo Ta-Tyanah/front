@@ -210,6 +210,7 @@ tbody tr:hover {
   border: 1px solid #ddd;
   border-radius: 4px;
   text-align: center;
+  transition: all 0.3s ease;
 }
 
 .input-consommation:focus {
@@ -221,6 +222,7 @@ tbody tr:hover {
 .input-consommation:disabled {
   background-color: #f5f5f5;
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .actions-cellule {
@@ -236,7 +238,7 @@ tbody tr:hover {
   border-radius: 4px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 0.3rem;
@@ -244,6 +246,33 @@ tbody tr:hover {
 
 .bouton-modifier:hover {
   background-color: var(--gray-dark); /* Gris foncé */
+  transform: translateY(-2px);
+}
+
+.bouton-modifier.actif {
+  background-color: #4caf50; /* Vert */
+}
+
+.bouton-modifier.actif:hover {
+  background-color: #388e3c; /* Vert foncé */
+}
+
+.bouton-supprimer {
+  padding: 0.4rem 0.8rem;
+  background-color: var(--dark); /* Noir */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bouton-supprimer:hover {
+  background-color: var(--primary); /* Rouge */
   transform: translateY(-2px);
 }
 
@@ -323,7 +352,7 @@ tbody tr:hover {
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: all 0.3s ease;
 }
 
 .bouton-annuler:hover {
@@ -339,7 +368,7 @@ tbody tr:hover {
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(229, 0, 0, 0.2);
 }
 
@@ -361,12 +390,306 @@ tbody tr:hover {
   font-style: italic;
 }
 
+/* Alerte flottante modernisée */
+.alerte-flottante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 400px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.alerte-flottante.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.alerte-flottante.disparition {
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+.alerte-flottante.alerte-succes {
+  background-color: rgba(232, 245, 233, 0.95);
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
+}
+
+.alerte-flottante.alerte-erreur {
+  background-color: rgba(255, 235, 238, 0.95);
+  color: #c62828;
+  border-left: 4px solid #c62828;
+}
+
+.alerte-flottante.alerte-info {
+  background-color: rgba(227, 242, 253, 0.95);
+  color: #1565c0;
+  border-left: 4px solid #1565c0;
+}
+
+.alerte-flottante .icone-alerte {
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alerte-flottante .texte-alerte {
+  flex: 1;
+  font-weight: 500;
+}
+
+.alerte-flottante .fermer-alerte {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.alerte-flottante .fermer-alerte:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+
+/* Alerte de confirmation modernisée */
+.alerte-confirmation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.alerte-confirmation.visible {
+  opacity: 1;
+}
+
+.alerte-contenu {
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transform: translateY(30px) scale(0.95);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: center;
+}
+
+.alerte-confirmation.visible .alerte-contenu {
+  transform: translateY(0) scale(1);
+}
+
+.alerte-titre {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.alerte-message {
+  margin-bottom: 2rem;
+  color: var(--gray);
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.alerte-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.bouton-annuler-alerte {
+  padding: 0.8rem 1.5rem;
+  background-color: #f5f5f5;
+  color: var(--gray-dark);
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bouton-annuler-alerte:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.bouton-confirmer-alerte {
+  padding: 0.8rem 1.5rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(229, 0, 0, 0.2);
+}
+
+.bouton-confirmer-alerte:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(229, 0, 0, 0.3);
+}
+
+/* Styles pour le bouton de suppression d'agence */
+.th-agence {
+  position: relative;
+}
+
+.bouton-supprimer-agence {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(229, 0, 0, 0.1);
+  color: var(--primary);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.th-agence:hover .bouton-supprimer-agence {
+  opacity: 1;
+}
+
+.bouton-supprimer-agence:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajouter ces styles pour les listes déroulantes */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.bouton-supprimer-liste {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--dark);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bouton-supprimer-liste:hover {
+  background-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  min-width: 200px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  overflow: hidden;
+  animation: fadeInDown 0.3s ease;
+}
+
+.dropdown-header {
+  padding: 0.75rem 1rem;
+  background-color: #f5f5f5;
+  color: var(--gray-dark);
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+  color: var(--primary);
+}
+
+.dropdown-item:active {
+  background-color: #e0e0e0;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

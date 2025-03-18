@@ -1,13 +1,106 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useStock } from "../contexte/StockContexte"
 import "../styles/Inventaire.css"
-import { Search, Package, Computer, Brush, FileText, FileDown } from "lucide-react"
+import { Search, Calendar, Filter, FileDown, Package, Computer, Brush, FileText } from "lucide-react"
 
 function Inventaire() {
-  const { inventaire } = useStock()
+  // États pour les données
+  const [inventaireConsolide, setInventaireConsolide] = useState([])
+  const [inventaireFiltree, setInventaireFiltree] = useState([])
+
+  // États pour les filtres
   const [filtreDesignation, setFiltreDesignation] = useState("")
+  const [filtreMois, setFiltreMois] = useState("")
+  const [filtreAnnee, setFiltreAnnee] = useState("")
+
+  // Récupérer les données du contexte
+  const { inventaire } = useStock()
+
+  // Charger les données de dispatche et western union depuis localStorage
+  useEffect(() => {
+    // Récupérer les données
+    const dispatchesSauvegardes = localStorage.getItem("dispatches") || "[]"
+    const westernUnionsSauvegardes = localStorage.getItem("westernUnions") || "[]"
+    const directionsSauvegardees = localStorage.getItem("directions") || "[]"
+
+    const dispatches = JSON.parse(dispatchesSauvegardes)
+    const westernUnions = JSON.parse(westernUnionsSauvegardes)
+    const directions = JSON.parse(directionsSauvegardees)
+
+    // Combiner toutes les données en un seul tableau
+    const toutesLesDonnees = [
+      ...inventaire.map((item) => ({
+        ...item,
+        source: "Stock",
+        dateReference: item.dateEntree || item.date,
+      })),
+      ...dispatches.map((item) => ({
+        id: `d-${item.id}`,
+        designation: item.designation,
+        categorie: "Dispatche",
+        quantite: item.quantite,
+        date: item.date,
+        dateReference: item.date,
+        source: "Dispatche",
+      })),
+      ...westernUnions.map((item) => ({
+        id: `wu-${item.id}`,
+        designation: item.designation,
+        categorie: "Western Union",
+        quantite: item.quantite,
+        date: item.date,
+        dateReference: item.date,
+        source: "Western Union",
+      })),
+      ...directions.map((item) => ({
+        id: `dir-${item.id}`,
+        designation: item.designation,
+        categorie: "Direction",
+        quantite: item.quantite,
+        date: item.date,
+        dateReference: item.date,
+        source: "Direction",
+      })),
+    ]
+
+    // Trier par date (du plus récent au plus ancien)
+    const donneeTriees = toutesLesDonnees.sort((a, b) => {
+      return new Date(b.dateReference) - new Date(a.dateReference)
+    })
+
+    setInventaireConsolide(donneeTriees)
+    setInventaireFiltree(donneeTriees)
+  }, [inventaire])
+
+  // Appliquer les filtres lorsqu'ils changent
+  useEffect(() => {
+    let resultats = [...inventaireConsolide]
+
+    // Filtre par désignation
+    if (filtreDesignation) {
+      resultats = resultats.filter((item) => item.designation.toLowerCase().includes(filtreDesignation.toLowerCase()))
+    }
+
+    // Filtre par mois
+    if (filtreMois) {
+      resultats = resultats.filter((item) => {
+        const date = new Date(item.dateReference)
+        return (date.getMonth() + 1).toString() === filtreMois
+      })
+    }
+
+    // Filtre par année
+    if (filtreAnnee) {
+      resultats = resultats.filter((item) => {
+        const date = new Date(item.dateReference)
+        return date.getFullYear().toString() === filtreAnnee
+      })
+    }
+
+    setInventaireFiltree(resultats)
+  }, [filtreDesignation, filtreMois, filtreAnnee, inventaireConsolide])
 
   // Obtenir l'icône correspondant à la catégorie
   const getIconeCategorie = (categorie) => {
@@ -20,23 +113,30 @@ function Inventaire() {
         return <Package size={18} />
       case "Produits de Bureau":
         return <FileText size={18} />
+      case "Dispatche":
+        return <Package size={18} className="icone-dispatche" />
+      case "Western Union":
+        return <Package size={18} className="icone-western-union" />
+      case "Direction":
+        return <Package size={18} className="icone-direction" />
       default:
         return <Package size={18} />
     }
   }
 
-  // Filtrer l'inventaire
-  const inventaireFiltree = inventaire.filter((item) =>
-    item.designation.toLowerCase().includes(filtreDesignation.toLowerCase()),
-  )
-
   // Fonction pour exporter l'inventaire en Excel (CSV)
   const exporterEnExcel = () => {
     // Créer les en-têtes du CSV
-    const headers = ["Désignation", "Catégorie", "Date", "Quantité"]
+    const headers = ["Désignation", "Catégorie", "Date", "Quantité", "Source"]
 
     // Convertir les données en format CSV
-    const csvData = inventaireFiltree.map((item) => [item.designation, item.categorie, item.date, item.quantite])
+    const csvData = inventaireFiltree.map((item) => [
+      item.designation,
+      item.categorie,
+      item.dateReference,
+      item.quantite,
+      item.source,
+    ])
 
     // Ajouter les en-têtes au début
     csvData.unshift(headers)
@@ -82,13 +182,23 @@ function Inventaire() {
     }, 3000)
   }
 
+  // Générer les options pour les années
+  const genererOptionsAnnees = () => {
+    const anneeActuelle = new Date().getFullYear()
+    const annees = []
+    for (let i = anneeActuelle - 5; i <= anneeActuelle; i++) {
+      annees.push(i)
+    }
+    return annees.reverse()
+  }
+
   return (
     <div className="page-inventaire">
-      <h1 className="titre-page">Inventaire</h1>
+      <h1 className="titre-page">Inventaire Consolidé</h1>
 
       <div className="section-inventaire">
         <div className="entete-section">
-          <div className="filtre-inventaire">
+          <div className="filtres-inventaire">
             <div className="champ-recherche-wrapper">
               <Search size={18} className="icone-recherche" />
               <input
@@ -99,8 +209,56 @@ function Inventaire() {
                 className="champ-filtre"
               />
             </div>
+
+            <div className="filtres-date">
+              <div className="groupe-filtre">
+                <label htmlFor="filtreMois">
+                  <Calendar size={16} /> Mois:
+                </label>
+                <select
+                  id="filtreMois"
+                  value={filtreMois}
+                  onChange={(e) => setFiltreMois(e.target.value)}
+                  className="select-filtre"
+                >
+                  <option value="">Tous les mois</option>
+                  <option value="1">Janvier</option>
+                  <option value="2">Février</option>
+                  <option value="3">Mars</option>
+                  <option value="4">Avril</option>
+                  <option value="5">Mai</option>
+                  <option value="6">Juin</option>
+                  <option value="7">Juillet</option>
+                  <option value="8">Août</option>
+                  <option value="9">Septembre</option>
+                  <option value="10">Octobre</option>
+                  <option value="11">Novembre</option>
+                  <option value="12">Décembre</option>
+                </select>
+              </div>
+
+              <div className="groupe-filtre">
+                <label htmlFor="filtreAnnee">
+                  <Filter size={16} /> Année:
+                </label>
+                <select
+                  id="filtreAnnee"
+                  value={filtreAnnee}
+                  onChange={(e) => setFiltreAnnee(e.target.value)}
+                  className="select-filtre"
+                >
+                  <option value="">Toutes les années</option>
+                  {genererOptionsAnnees().map((annee) => (
+                    <option key={annee} value={annee.toString()}>
+                      {annee}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
-          <button className="bouton-exporter" onClick={exporterEnExcel} disabled={inventaire.length === 0}>
+
+          <button className="bouton-exporter" onClick={exporterEnExcel} disabled={inventaireFiltree.length === 0}>
             <FileDown size={16} /> Exporter en Excel
           </button>
         </div>
@@ -113,12 +271,13 @@ function Inventaire() {
                 <th>Catégorie</th>
                 <th>Date</th>
                 <th>Quantité</th>
+                <th>Source</th>
               </tr>
             </thead>
             <tbody>
               {inventaireFiltree.length > 0 ? (
                 inventaireFiltree.map((item) => (
-                  <tr key={item.id} className="item-inventaire">
+                  <tr key={item.id} className={`item-inventaire source-${item.source.toLowerCase().replace(" ", "-")}`}>
                     <td>{item.designation}</td>
                     <td>
                       <div className="categorie-cell">
@@ -126,19 +285,44 @@ function Inventaire() {
                         <span>{item.categorie}</span>
                       </div>
                     </td>
-                    <td>{item.date}</td>
+                    <td>{new Date(item.dateReference).toLocaleDateString()}</td>
                     <td>{item.quantite}</td>
+                    <td>
+                      <span className={`badge-source ${item.source.toLowerCase().replace(" ", "-")}`}>
+                        {item.source}
+                      </span>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="no-data">
-                    Aucun élément dans l'inventaire. Utilisez le bouton "Enregistrer l'inventaire" dans la page Stock.
+                  <td colSpan="5" className="no-data">
+                    Aucun élément dans l'inventaire correspondant aux critères de recherche.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+
+        <div className="statistiques-inventaire">
+          <div className="stat-item">
+            <div className="stat-label">Total des articles:</div>
+            <div className="stat-value">{inventaireFiltree.length}</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-label">Articles en stock:</div>
+            <div className="stat-value">{inventaireFiltree.filter((item) => item.source === "Stock").length}</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-label">Articles dispatche:</div>
+            <div className="stat-value">
+              {
+                inventaireFiltree.filter((item) => ["Dispatche", "Western Union", "Direction"].includes(item.source))
+                  .length
+              }
+            </div>
+          </div>
         </div>
       </div>
     </div>
