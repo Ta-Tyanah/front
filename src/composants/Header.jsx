@@ -52,6 +52,9 @@ function Header() {
   return (
     <header className={`dashboard-entete ${scrolled ? "scrolled" : ""}`}>
       <div className="logo">
+        <div className="logo-carre">
+          <img src="/images/cem.png" alt="Caisse d'Epargne de Madagascar" className="logo-image" />
+        </div>
         <h1>GestionStock</h1>
       </div>
 
@@ -70,7 +73,7 @@ function Header() {
 
         {menuProfilOuvert && (
           <div className="menu-profil">
-            <NavLink to="/profil" onClick={() => setMenuProfilOuvert(false)}>
+            <NavLink to="/dashboard/profil" onClick={() => setMenuProfilOuvert(false)}>
               <span className="icone-menu-item">
                 <User size={16} />
               </span>{" "}

@@ -2,10 +2,20 @@
 
 import { useState, useEffect } from "react"
 import { NavLink, useLocation } from "react-router-dom"
-import { LayoutDashboard, Package, ClipboardList, Truck, Building2, ChevronDown, ChevronUp, Users } from "lucide-react"
+import {
+  LayoutDashboard,
+  Package,
+  ClipboardList,
+  Building,
+  Building2,
+  ChevronDown,
+  ChevronUp,
+  Users,
+} from "lucide-react"
 
 function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
   const [sousMenuOuvert, setSousMenuOuvert] = useState(true)
+  const [sousMenuUtilisateursOuvert, setSousMenuUtilisateursOuvert] = useState(false)
   const location = useLocation()
 
   // Ouvrir automatiquement le sous-menu correspondant à la route active
@@ -13,14 +23,22 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
     if (
       location.pathname.includes("/dashboard/stock") ||
       location.pathname.includes("/dashboard/inventaire") ||
-      location.pathname.includes("/dashboard/dispatche")
+      location.pathname.includes("/dashboard/agence")
     ) {
       setSousMenuOuvert(true)
+    }
+
+    if (location.pathname.includes("/dashboard/gestion-utilisateurs")) {
+      setSousMenuUtilisateursOuvert(true)
     }
   }, [location])
 
   const basculerSousMenu = () => {
     setSousMenuOuvert(!sousMenuOuvert)
+  }
+
+  const basculerSousMenuUtilisateurs = () => {
+    setSousMenuUtilisateursOuvert(!sousMenuUtilisateursOuvert)
   }
 
   const fermerMenuMobile = () => {
@@ -35,7 +53,7 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
         <div className="groupe-menu">
           <h3 className="titre-menu">Tableau de bord</h3>
           <NavLink
-            to="/AccueilDashboard"
+            to="/AcuueilDashboard"
             end
             className={({ isActive }) => (isActive ? "lien-actif" : "")}
             onClick={fermerMenuMobile}
@@ -77,14 +95,14 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
               <span className="texte-menu-item">Inventaire</span>
             </NavLink>
             <NavLink
-              to="/dashboard/dispatche"
+              to="/dashboard/agence"
               className={({ isActive }) => (isActive ? "lien-actif" : "")}
               onClick={fermerMenuMobile}
             >
               <span className="icone-menu-item">
-                <Truck size={18} />
+                <Building size={18} />
               </span>
-              <span className="texte-menu-item">Dispatche</span>
+              <span className="texte-menu-item">Agence</span>
             </NavLink>
           </div>
         </div>
@@ -106,7 +124,7 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
         <div className="groupe-menu">
           <h3 className="titre-menu">Gestion des utilisateurs</h3>
           <NavLink
-            to="/dashboard/utilisateurs"
+            to="/dashboard/gestion-utilisateurs"
             className={({ isActive }) => (isActive ? "lien-actif" : "")}
             onClick={fermerMenuMobile}
           >

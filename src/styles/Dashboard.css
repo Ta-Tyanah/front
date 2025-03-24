@@ -464,6 +464,8 @@
   margin-left: 280px; /* Largeur du sidebar */
   min-height: calc(100vh - 70px);
   animation: fadeIn 0.5s ease-out;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 @keyframes fadeIn {
@@ -543,6 +545,56 @@
   .dashboard-contenu {
     margin-left: 0;
     padding: 1rem;
+  }
+}
+
+/* Ajouter ces styles à la fin du fichier pour améliorer la responsivité globale */
+
+/* Amélioration du défilement horizontal pour tout le dashboard */
+
+/* Assurer que les tableaux ont un défilement horizontal approprié */
+table {
+  min-width: 100%;
+  width: auto;
+}
+
+/* Améliorer la visibilité des tableaux sur petits écrans */
+@media (max-width: 1200px) {
+  .dashboard-contenu {
+    padding: 1rem 0.5rem;
+  }
+
+  .section-gestion-stock,
+  .section-dispatche,
+  .section-inventaire,
+  .section-western-union,
+  .section-utilisateurs,
+  .section-immobiliers {
+    padding: 1rem;
+    overflow-x: hidden;
+  }
+
+  .tableau-stock-wrapper,
+  .tableau-dispatche-wrapper,
+  .tableau-western-union-wrapper,
+  .tableau-utilisateurs-wrapper,
+  .tableau-detail-wrapper,
+  .liste-inventaire {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* Assurer que le menu latéral ne cache pas le contenu sur petits écrans */
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .dashboard-contenu {
+    margin-left: 0;
+    width: 100%;
   }
 }
 

@@ -126,7 +126,7 @@ function Immobiliers() {
   }
 
   return (
-    <div className="page-immobiliers">
+    <div className="page-immobiliers animation-immobiliers">
       <h1 className="titre-page">Gestion des Immobiliers</h1>
 
       <div className="section-immobiliers">
@@ -152,7 +152,7 @@ function Immobiliers() {
                 <th>Nom</th>
                 <th>Type</th>
                 <th>Localisation</th>
-                <th>Date{` d'acquisition`}</th>
+                <th>Date d'acquisition</th>
                 <th>Valeur</th>
                 <th>État</th>
                 <th>Actions</th>
@@ -220,7 +220,7 @@ function Immobiliers() {
               </div>
 
               <div className="groupe-champ">
-                <label htmlFor="dateAcquisition">Date {`d'acquisition`}</label>
+                <label htmlFor="dateAcquisition">Date d'acquisition</label>
                 <input
                   id="dateAcquisition"
                   name="dateAcquisition"

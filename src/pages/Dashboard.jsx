@@ -1,15 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import Header from "../composants/Header"
 import SidebarMenu from "../composants/SidebarMenu"
-import "../styles/Dashboard.css"
-
 
 function Dashboard() {
   const [menuMobileOuvert, setMenuMobileOuvert] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
 
   // Simulation de chargement initial
   useEffect(() => {

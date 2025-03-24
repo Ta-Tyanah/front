@@ -14,28 +14,24 @@ function Connexion() {
   const { connexion } = useAuth()
   const naviguer = useNavigate()
 
-  const gererSoumission = async (e) => {
+  const gererSoumission = (e) => {
     e.preventDefault()
-    setChargement(true)
-    setErreur("")
-    setSucces("")
 
-    // Appel à la fonction connexion
-    const result = await connexion(email, motDePasse)
-
-    if (result.success) {
-      setSucces("Connexion réussie!")
+    try {
+      connexion(email, motDePasse)
+      // Redirection directe vers le dashboard
       naviguer("/dashboard")
-    } else {
+    } catch (err) {
       setErreur("Échec de connexion. Veuillez vérifier vos identifiants.")
     }
-
-    setChargement(false)
   }
 
   return (
     <div className="page-connexion">
       <div className="conteneur-connexion">
+        <div className="logo-cem">
+          <img src="/images/cem.png" alt="Caisse d'Epargne de Madagascar" />
+        </div>
         <h1 className="titre-connexion">Connexion</h1>
 
         {erreur && (
@@ -84,9 +80,13 @@ function Connexion() {
           </button>
         </form>
 
+        <p className="lien-inscription">
+          Pas encore de compte? <Link to="/inscription">S'inscrire</Link>
+        </p>
       </div>
     </div>
   )
 }
 
 export default Connexion
+

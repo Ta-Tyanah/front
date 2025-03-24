@@ -1,0 +1,121 @@
+/* Animations différentes pour chaque page */
+
+/* Animation pour AccueilDashboard */
+.animation-accueil {
+    animation: slideInFromTop 0.7s ease-out;
+  }
+  
+  @keyframes slideInFromTop {
+    0% {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Animation pour Stock */
+  .animation-stock {
+    animation: fadeInScale 0.6s ease-out;
+  }
+  
+  @keyframes fadeInScale {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Animation pour Inventaire */
+  .animation-inventaire {
+    animation: slideInFromRight 0.6s ease-out;
+  }
+  
+  @keyframes slideInFromRight {
+    0% {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Animation pour Dispatche */
+  .animation-dispatche {
+    animation: slideInFromLeft 0.6s ease-out;
+  }
+  
+  @keyframes slideInFromLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Animation pour Immobiliers */
+  .animation-immobiliers {
+    animation: bounceIn 0.7s ease-out;
+  }
+  
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  /* Animation pour GestionUtilisateurs */
+  .animation-utilisateurs {
+    animation: fadeInRotate 0.7s ease-out;
+  }
+  
+  @keyframes fadeInRotate {
+    0% {
+      opacity: 0;
+      transform: rotate(-5deg) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(0) scale(1);
+    }
+  }
+  
+  /* Animation pour Profil */
+  .animation-profil {
+    animation: fadeInBlur 0.7s ease-out;
+  }
+  
+  @keyframes fadeInBlur {
+    0% {
+      opacity: 0;
+      filter: blur(10px);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+  
+  

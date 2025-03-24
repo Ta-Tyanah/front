@@ -14,6 +14,8 @@
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.3s ease;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .section-inventaire:hover {
@@ -138,38 +140,58 @@
   opacity: 0.7;
 }
 
-.liste-inventaire {
-  overflow-x: auto;
+/* Styles pour les sections de tableau */
+.section-tableau {
+  margin-bottom: 2rem;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  scrollbar-width: thin;
-  scrollbar-color: var(--gray) transparent;
-  margin-bottom: 1.5rem;
+  overflow: hidden;
 }
 
-.liste-inventaire::-webkit-scrollbar {
+.titre-tableau {
+  background-color: #f5f5f5;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--dark);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tableau-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tableau-scroll {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray) transparent;
+}
+
+.tableau-scroll::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
 
-.liste-inventaire::-webkit-scrollbar-track {
+.tableau-scroll::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
 
-.liste-inventaire::-webkit-scrollbar-thumb {
+.tableau-scroll::-webkit-scrollbar-thumb {
   background: var(--gray);
   border-radius: 4px;
 }
 
-.liste-inventaire::-webkit-scrollbar-thumb:hover {
+.tableau-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--gray-dark);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px; /* Force horizontal scroll on small screens */
+  min-width: 100%;
 }
 
 th,
@@ -194,24 +216,6 @@ th {
 
 .item-inventaire:hover {
   background-color: #f8f9fa;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.source-stock {
-  background-color: rgba(232, 245, 233, 0.2);
-}
-
-.source-dispatche {
-  background-color: rgba(227, 242, 253, 0.2);
-}
-
-.source-western-union {
-  background-color: rgba(255, 243, 224, 0.2);
-}
-
-.source-direction {
-  background-color: rgba(237, 231, 246, 0.2);
 }
 
 .categorie-cell {
@@ -224,64 +228,50 @@ th {
   display: flex;
   align-items: center;
   color: var(--primary);
-  transition: transform 0.3s ease;
 }
 
-.icone-dispatche {
-  color: #1976d2;
+.cellule-readonly {
+  background-color: #f5f5f5;
+  color: #6c757d;
 }
 
-.icone-western-union {
-  color: #ff9800;
+/* Styles pour les consommations */
+.consommations-liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.icone-direction {
-  color: #9c27b0;
-}
-
-.item-inventaire:hover .categorie-icon {
-  transform: scale(1.2);
-}
-
-.badge-source {
+.badge-consommation {
   display: inline-block;
   padding: 0.25rem 0.5rem;
+  background-color: #e3f2fd;
+  color: #1976d2;
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 500;
 }
 
-.badge-source.stock {
-  background-color: #e8f5e9;
-  color: #388e3c;
+.no-consommation {
+  color: var(--gray);
+  font-style: italic;
+  font-size: 0.9rem;
 }
 
-.badge-source.dispatche {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.badge-source.western-union {
-  background-color: #fff3e0;
-  color: #f57c00;
-}
-
-.badge-source.direction {
-  background-color: #ede7f6;
-  color: #7b1fa2;
-}
-
-.no-data {
+.no-data-message {
   text-align: center;
   padding: 2rem;
   color: var(--gray);
   font-style: italic;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
 }
 
 /* Statistiques d'inventaire */
 .statistiques-inventaire {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;
 }
@@ -289,9 +279,9 @@ th {
 .stat-item {
   background-color: #f8f9fa;
   border-radius: 8px;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   flex: 1;
-  min-width: 200px;
+  min-width: 150px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   display: flex;
@@ -378,6 +368,7 @@ th {
   }
 }
 
+/* Amélioration de la responsivité */
 @media (max-width: 768px) {
   .entete-section {
     flex-direction: column;
@@ -403,6 +394,10 @@ th {
 
   .statistiques-inventaire {
     flex-direction: column;
+  }
+
+  .stat-item {
+    width: 100%;
   }
 }
 

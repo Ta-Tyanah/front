@@ -263,7 +263,7 @@ function Stock() {
   }, [lignesStock])
 
   return (
-    <div className="page-stock">
+    <div className="page-stock animation-stock">
       <h1 className="titre-page">Gestion de Stock</h1>
 
       <div className="categories-stock">

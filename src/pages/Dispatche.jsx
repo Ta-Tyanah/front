@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import "../styles/Dispatche.css"
 import { Search, Plus, Edit, Trash, Save } from "lucide-react"
 
-function Dispatche() {
-  // État pour les dispatches normaux
+function Agence() {
+  // État pour les agences normaux
   const [dispatches, setDispatches] = useState([])
   const [agences, setAgences] = useState([])
   const [nouvelleAgence, setNouvelleAgence] = useState("")
@@ -108,7 +108,7 @@ function Dispatche() {
     }
   }, [dispatches, agences, westernUnions, agencesWU, directions, agencesDir])
 
-  // Fonctions pour les dispatches normaux
+  // Fonctions pour les agences normaux
   const ouvrirModal = () => {
     setDispatchEdite(null)
     setNouveauDispatch({
@@ -141,10 +141,10 @@ function Dispatche() {
     })
   }
 
-  // Fonction pour ajouter ou modifier un dispatche
+  // Fonction pour ajouter ou modifier un agence
   const sauvegarderDispatch = () => {
     if (dispatchEdite) {
-      // Mise à jour d'un dispatche existant
+      // Mise à jour d'un agence existant
       const dispatchesUpdated = dispatches.map((d) =>
         d.id === dispatchEdite.id
           ? {
@@ -158,7 +158,7 @@ function Dispatche() {
       setDispatches(dispatchesUpdated)
       localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
     } else {
-      // Ajout d'un nouveau dispatche
+      // Ajout d'un nouveau agence
       const nouveauId = dispatches.length > 0 ? Math.max(...dispatches.map((d) => d.id)) + 1 : 1
 
       const dispatch = {
@@ -183,7 +183,7 @@ function Dispatche() {
     fermerModal()
 
     // Afficher un message de succès
-    afficherMessage(dispatchEdite ? "Dispatche modifié avec succès!" : "Dispatche ajouté avec succès!", "succes")
+    afficherMessage(dispatchEdite ? "Agence modifiée avec succès!" : "Agence ajoutée avec succès!", "succes")
   }
 
   // Ajouter une nouvelle agence
@@ -200,7 +200,7 @@ function Dispatche() {
     setAgences(agencesUpdated)
     localStorage.setItem("agences", JSON.stringify(agencesUpdated))
 
-    // Mettre à jour les dispatches pour inclure la nouvelle agence
+    // Mettre à jour les agences pour inclure la nouvelle agence
     const dispatchesUpdated = dispatches.map((dispatch) => ({
       ...dispatch,
       consommations: [...(dispatch.consommations || []), { agenceId: nouvelleAgenceObj.id, quantite: 0 }],
@@ -256,7 +256,7 @@ function Dispatche() {
       setAgences(agencesUpdated)
       localStorage.setItem("agences", JSON.stringify(agencesUpdated))
 
-      // Mettre à jour les dispatches pour retirer cette agence
+      // Mettre à jour les agences pour retirer cette agence
       const dispatchesUpdated = dispatches.map((dispatch) => ({
         ...dispatch,
         consommations: dispatch.consommations.filter((c) => c.agenceId !== agenceId),
@@ -294,7 +294,7 @@ function Dispatche() {
     localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
   }
 
-  // Activer/désactiver le mode édition pour un dispatch
+  // Activer/désactiver le mode édition pour un agence
   const toggleEditionDispatch = (dispatchId) => {
     if (dispatchEnEdition === dispatchId) {
       setDispatchEnEdition(null)
@@ -305,7 +305,7 @@ function Dispatche() {
     }
   }
 
-  // Supprimer un dispatch
+  // Supprimer un agence
   const supprimerDispatch = (dispatchId) => {
     // Créer une alerte de confirmation moderne
     const alerteElement = document.createElement("div")
@@ -313,7 +313,7 @@ function Dispatche() {
     alerteElement.innerHTML = `
     <div class="alerte-contenu">
       <div class="alerte-titre">Confirmer la suppression</div>
-      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer ce dispatche ?</div>
+      <div class="alerte-message">Êtes-vous sûr de vouloir supprimer cette agence ?</div>
       <div class="alerte-actions">
         <button class="bouton-annuler-alerte">Annuler</button>
         <button class="bouton-confirmer-alerte">Supprimer</button>
@@ -341,7 +341,7 @@ function Dispatche() {
     })
 
     boutonConfirmer.addEventListener("click", () => {
-      // Supprimer le dispatch
+      // Supprimer le agence
       const dispatchesUpdated = dispatches.filter((d) => d.id !== dispatchId)
       setDispatches(dispatchesUpdated)
       localStorage.setItem("dispatches", JSON.stringify(dispatchesUpdated))
@@ -352,7 +352,7 @@ function Dispatche() {
         document.body.removeChild(alerteElement)
 
         // Afficher un message de succès
-        afficherMessage("Dispatche supprimé avec succès!", "succes")
+        afficherMessage("Agence supprimée avec succès!", "succes")
       }, 300)
     })
   }
@@ -880,7 +880,7 @@ function Dispatche() {
     if (type === "succes") {
       icone = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
     } else if (type === "erreur") {
-      icone = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`
+      icone = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`
     } else if (type === "info") {
       icone = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
     }
@@ -977,7 +977,7 @@ function Dispatche() {
     }
   }, [])
 
-  // Filtrer les dispatches par désignation
+  // Filtrer les agences par désignation
   const dispatchesFiltres = dispatches.filter((dispatch) =>
     dispatch.designation.toLowerCase().includes(filtreDesignation.toLowerCase()),
   )
@@ -992,14 +992,15 @@ function Dispatche() {
     dir.designation.toLowerCase().includes(filtreDirection.toLowerCase()),
   )
 
+  // Ajouter la classe d'animation à Agence
   return (
-    <div className="page-dispatche">
-      <h1 className="titre-page">Dispatche des Produits</h1>
+    <div className="page-dispatche animation-dispatche">
+      <h1 className="titre-page">Gestion des Agences</h1>
 
-      {/* Section Dispatche */}
+      {/* Section Agence */}
       <div className="section-dispatche">
         <div className="entete-section">
-          <h2>Liste des Dispatches</h2>
+          <h2>Liste des Agences</h2>
           <div className="actions-entete">
             <div className="champ-recherche-wrapper">
               <Search size={18} className="icone-recherche" />
@@ -1118,7 +1119,7 @@ function Dispatche() {
                 ) : (
                   <tr>
                     <td colSpan={agences.length > 0 ? agences.length + 4 : 4} className="no-data">
-                      Aucun dispatche trouvé. Utilisez le bouton "Ajouter" pour en créer un.
+                      Aucune agence trouvée. Utilisez le bouton "Ajouter" pour en créer une.
                     </td>
                   </tr>
                 )}
@@ -1392,11 +1393,11 @@ function Dispatche() {
         </div>
       </div>
 
-      {/* Modal pour Dispatche */}
+      {/* Modal pour Agence */}
       {modalOuvert && (
         <div className="modal-overlay">
           <div className="modal-contenu">
-            <h2>{dispatchEdite ? "Modifier" : "Ajouter"} un dispatche</h2>
+            <h2>{dispatchEdite ? "Modifier" : "Ajouter"} une agence</h2>
 
             <div className="formulaire-modal">
               <div className="groupe-champ">
@@ -1578,5 +1579,5 @@ function Dispatche() {
   )
 }
 
-export default Dispatche
+export default Agence
 

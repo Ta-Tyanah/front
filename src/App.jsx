@@ -7,7 +7,7 @@ import Inventaire from "./pages/Inventaire"
 import Dispatche from "./pages/Dispatche"
 import Immobiliers from "./pages/Immobiliers"
 import Profil from "./pages/Profil"
-import Utilisateurs from "./pages/Utilisateurs"
+import GestionUtilisateurs from "./pages/GestionUtilisateurs"
 import AccueilDashboard from "./pages/AccueilDashboard"
 import { AuthProvider } from "./contexte/AuthContexte"
 import { StockProvider } from "./contexte/StockContexte"
@@ -29,7 +29,7 @@ function App() {
             <Route path="inventaire" element={<Inventaire />} />
             <Route path="dispatche" element={<Dispatche />} />
             <Route path="immobiliers" element={<Immobiliers />} />
-            <Route path="utilisateurs" element={<Utilisateurs />} />
+            <Route path="gestion-utilisateurs" element={<GestionUtilisateurs />} />
           </Route>
         </Routes>
       </Router>

@@ -7,8 +7,10 @@ import { Search, Calendar, Filter, FileDown, Package, Computer, Brush, FileText 
 
 function Inventaire() {
   // États pour les données
-  const [inventaireConsolide, setInventaireConsolide] = useState([])
-  const [inventaireFiltree, setInventaireFiltree] = useState([])
+  const [stockData, setStockData] = useState([])
+  const [dispatcheData, setDispatcheData] = useState([])
+  const [westernUnionData, setWesternUnionData] = useState([])
+  const [directionData, setDirectionData] = useState([])
 
   // États pour les filtres
   const [filtreDesignation, setFiltreDesignation] = useState("")
@@ -16,91 +18,45 @@ function Inventaire() {
   const [filtreAnnee, setFiltreAnnee] = useState("")
 
   // Récupérer les données du contexte
-  const { inventaire } = useStock()
+  const { lignesStock } = useStock()
 
-  // Charger les données de dispatche et western union depuis localStorage
+  // Charger les données depuis localStorage
   useEffect(() => {
     // Récupérer les données
     const dispatchesSauvegardes = localStorage.getItem("dispatches") || "[]"
     const westernUnionsSauvegardes = localStorage.getItem("westernUnions") || "[]"
     const directionsSauvegardees = localStorage.getItem("directions") || "[]"
 
-    const dispatches = JSON.parse(dispatchesSauvegardes)
-    const westernUnions = JSON.parse(westernUnionsSauvegardes)
-    const directions = JSON.parse(directionsSauvegardees)
+    // Filtrer les données selon les critères
+    const filtrerDonnees = (donnees) => {
+      return donnees.filter((item) => {
+        // Filtre par désignation
+        const matchDesignation =
+          !filtreDesignation || item.designation.toLowerCase().includes(filtreDesignation.toLowerCase())
 
-    // Combiner toutes les données en un seul tableau
-    const toutesLesDonnees = [
-      ...inventaire.map((item) => ({
-        ...item,
-        source: "Stock",
-        dateReference: item.dateEntree || item.date,
-      })),
-      ...dispatches.map((item) => ({
-        id: `d-${item.id}`,
-        designation: item.designation,
-        categorie: "Dispatche",
-        quantite: item.quantite,
-        date: item.date,
-        dateReference: item.date,
-        source: "Dispatche",
-      })),
-      ...westernUnions.map((item) => ({
-        id: `wu-${item.id}`,
-        designation: item.designation,
-        categorie: "Western Union",
-        quantite: item.quantite,
-        date: item.date,
-        dateReference: item.date,
-        source: "Western Union",
-      })),
-      ...directions.map((item) => ({
-        id: `dir-${item.id}`,
-        designation: item.designation,
-        categorie: "Direction",
-        quantite: item.quantite,
-        date: item.date,
-        dateReference: item.date,
-        source: "Direction",
-      })),
-    ]
+        // Filtre par date
+        let dateItem
+        if (item.dateEntree) {
+          dateItem = new Date(item.dateEntree)
+        } else if (item.date) {
+          dateItem = new Date(item.date)
+        } else {
+          dateItem = new Date() // Fallback
+        }
 
-    // Trier par date (du plus récent au plus ancien)
-    const donneeTriees = toutesLesDonnees.sort((a, b) => {
-      return new Date(b.dateReference) - new Date(a.dateReference)
-    })
+        const matchMois = !filtreMois || (dateItem.getMonth() + 1).toString() === filtreMois
+        const matchAnnee = !filtreAnnee || dateItem.getFullYear().toString() === filtreAnnee
 
-    setInventaireConsolide(donneeTriees)
-    setInventaireFiltree(donneeTriees)
-  }, [inventaire])
-
-  // Appliquer les filtres lorsqu'ils changent
-  useEffect(() => {
-    let resultats = [...inventaireConsolide]
-
-    // Filtre par désignation
-    if (filtreDesignation) {
-      resultats = resultats.filter((item) => item.designation.toLowerCase().includes(filtreDesignation.toLowerCase()))
-    }
-
-    // Filtre par mois
-    if (filtreMois) {
-      resultats = resultats.filter((item) => {
-        const date = new Date(item.dateReference)
-        return (date.getMonth() + 1).toString() === filtreMois
+        return matchDesignation && matchMois && matchAnnee
       })
     }
 
-    // Filtre par année
-    if (filtreAnnee) {
-      resultats = resultats.filter((item) => {
-        const date = new Date(item.dateReference)
-        return date.getFullYear().toString() === filtreAnnee
-      })
-    }
-
-    setInventaireFiltree(resultats)
-  }, [filtreDesignation, filtreMois, filtreAnnee, inventaireConsolide])
+    // Mettre à jour les données filtrées
+    setStockData(filtrerDonnees(lignesStock))
+    setDispatcheData(filtrerDonnees(JSON.parse(dispatchesSauvegardes)))
+    setWesternUnionData(filtrerDonnees(JSON.parse(westernUnionsSauvegardes)))
+    setDirectionData(filtrerDonnees(JSON.parse(directionsSauvegardees)))
+  }, [lignesStock, filtreDesignation, filtreMois, filtreAnnee])
 
   // Obtenir l'icône correspondant à la catégorie
   const getIconeCategorie = (categorie) => {
@@ -113,12 +69,6 @@ function Inventaire() {
         return <Package size={18} />
       case "Produits de Bureau":
         return <FileText size={18} />
-      case "Dispatche":
-        return <Package size={18} className="icone-dispatche" />
-      case "Western Union":
-        return <Package size={18} className="icone-western-union" />
-      case "Direction":
-        return <Package size={18} className="icone-direction" />
       default:
         return <Package size={18} />
     }
@@ -127,16 +77,21 @@ function Inventaire() {
   // Fonction pour exporter l'inventaire en Excel (CSV)
   const exporterEnExcel = () => {
     // Créer les en-têtes du CSV
-    const headers = ["Désignation", "Catégorie", "Date", "Quantité", "Source"]
+    const headers = ["Type", "Désignation", "Catégorie", "Date", "Quantité"]
 
     // Convertir les données en format CSV
-    const csvData = inventaireFiltree.map((item) => [
-      item.designation,
-      item.categorie,
-      item.dateReference,
-      item.quantite,
-      item.source,
-    ])
+    const csvData = [
+      ...stockData.map((item) => [
+        "Stock",
+        item.designation,
+        item.categorie,
+        item.dateEntree || item.stockActuel.date,
+        item.stockActuel.quantite,
+      ]),
+      ...dispatcheData.map((item) => ["Dispatche", item.designation, "Dispatche", item.date, item.quantite]),
+      ...westernUnionData.map((item) => ["Western Union", item.designation, "Western Union", item.date, item.quantite]),
+      ...directionData.map((item) => ["Direction", item.designation, "Direction", item.date, item.quantite]),
+    ]
 
     // Ajouter les en-têtes au début
     csvData.unshift(headers)
@@ -192,8 +147,9 @@ function Inventaire() {
     return annees.reverse()
   }
 
+  // Ajouter la classe d'animation à Inventaire
   return (
-    <div className="page-inventaire">
+    <div className="page-inventaire animation-inventaire">
       <h1 className="titre-page">Inventaire Consolidé</h1>
 
       <div className="section-inventaire">
@@ -258,70 +214,192 @@ function Inventaire() {
             </div>
           </div>
 
-          <button className="bouton-exporter" onClick={exporterEnExcel} disabled={inventaireFiltree.length === 0}>
+          <button
+            className="bouton-exporter"
+            onClick={exporterEnExcel}
+            disabled={
+              stockData.length === 0 &&
+              dispatcheData.length === 0 &&
+              westernUnionData.length === 0 &&
+              directionData.length === 0
+            }
+          >
             <FileDown size={16} /> Exporter en Excel
           </button>
         </div>
 
-        <div className="liste-inventaire">
-          <table>
-            <thead>
-              <tr>
-                <th>Désignation</th>
-                <th>Catégorie</th>
-                <th>Date</th>
-                <th>Quantité</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody>
-              {inventaireFiltree.length > 0 ? (
-                inventaireFiltree.map((item) => (
-                  <tr key={item.id} className={`item-inventaire source-${item.source.toLowerCase().replace(" ", "-")}`}>
-                    <td>{item.designation}</td>
+        <div className="tableau-inventaire-wrapper">
+          <div className="tableau-inventaire-scroll">
+            <table className="tableau-inventaire-continu">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Désignation</th>
+                  <th>Catégorie</th>
+                  <th>Date</th>
+                  <th>Quantité</th>
+                  <th>Prix Unitaire</th>
+                  <th>Montant</th>
+                  <th>Consommations</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Lignes de Stock */}
+                {stockData.map((ligne) => (
+                  <tr key={`stock-${ligne.id}`} className="item-inventaire source-stock">
+                    <td>
+                      <span className="badge-source stock">Stock</span>
+                    </td>
+                    <td>{ligne.designation}</td>
                     <td>
                       <div className="categorie-cell">
-                        <span className="categorie-icon">{getIconeCategorie(item.categorie)}</span>
-                        <span>{item.categorie}</span>
+                        <span className="categorie-icon">{getIconeCategorie(ligne.categorie)}</span>
+                        <span>{ligne.categorie}</span>
                       </div>
                     </td>
-                    <td>{new Date(item.dateReference).toLocaleDateString()}</td>
-                    <td>{item.quantite}</td>
+                    <td>{ligne.stockActuel.date}</td>
+                    <td>{ligne.stockActuel.quantite}</td>
+                    <td>{ligne.stockActuel.prixUnitaire}</td>
+                    <td>{ligne.stockActuel.montant}</td>
+                    <td>-</td>
+                  </tr>
+                ))}
+
+                {/* Lignes de Dispatche */}
+                {dispatcheData.map((dispatche) => (
+                  <tr key={`dispatche-${dispatche.id}`} className="item-inventaire source-dispatche">
                     <td>
-                      <span className={`badge-source ${item.source.toLowerCase().replace(" ", "-")}`}>
-                        {item.source}
-                      </span>
+                      <span className="badge-source dispatche">Dispatche</span>
+                    </td>
+                    <td>{dispatche.designation}</td>
+                    <td>Dispatche</td>
+                    <td>{dispatche.date}</td>
+                    <td>{dispatche.quantite}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>
+                      {dispatche.consommations && dispatche.consommations.length > 0 ? (
+                        <div className="consommations-liste">
+                          {dispatche.consommations
+                            .map((c, index) => {
+                              const agence =
+                                c.agenceId && localStorage.getItem("agences")
+                                  ? JSON.parse(localStorage.getItem("agences")).find((a) => a.id === c.agenceId)
+                                  : null
+                              return agence && c.quantite > 0 ? (
+                                <span key={index} className="badge-consommation">
+                                  {agence.nom}: {c.quantite}
+                                </span>
+                              ) : null
+                            })
+                            .filter(Boolean)}
+                        </div>
+                      ) : (
+                        <span className="no-consommation">Aucune</span>
+                      )}
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="no-data">
-                    Aucun élément dans l'inventaire correspondant aux critères de recherche.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                ))}
+
+                {/* Lignes de Western Union */}
+                {westernUnionData.map((wu) => (
+                  <tr key={`wu-${wu.id}`} className="item-inventaire source-western-union">
+                    <td>
+                      <span className="badge-source western-union">Western Union</span>
+                    </td>
+                    <td>{wu.designation}</td>
+                    <td>Western Union</td>
+                    <td>{wu.date}</td>
+                    <td>{wu.quantite}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>
+                      {wu.consommations && wu.consommations.length > 0 ? (
+                        <div className="consommations-liste">
+                          {wu.consommations
+                            .map((c, index) => {
+                              const agence =
+                                c.agenceId && localStorage.getItem("agencesWU")
+                                  ? JSON.parse(localStorage.getItem("agencesWU")).find((a) => a.id === c.agenceId)
+                                  : null
+                              return agence && c.quantite > 0 ? (
+                                <span key={index} className="badge-consommation">
+                                  {agence.nom}: {c.quantite}
+                                </span>
+                              ) : null
+                            })
+                            .filter(Boolean)}
+                        </div>
+                      ) : (
+                        <span className="no-consommation">Aucune</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+
+                {/* Lignes de Direction */}
+                {directionData.map((dir) => (
+                  <tr key={`dir-${dir.id}`} className="item-inventaire source-direction">
+                    <td>
+                      <span className="badge-source direction">Direction</span>
+                    </td>
+                    <td>{dir.designation}</td>
+                    <td>Direction</td>
+                    <td>{dir.date}</td>
+                    <td>{dir.quantite}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>
+                      {dir.consommations && dir.consommations.length > 0 ? (
+                        <div className="consommations-liste">
+                          {dir.consommations
+                            .map((c, index) => {
+                              const agence =
+                                c.agenceId && localStorage.getItem("agencesDir")
+                                  ? JSON.parse(localStorage.getItem("agencesDir")).find((a) => a.id === c.agenceId)
+                                  : null
+                              return agence && c.quantite > 0 ? (
+                                <span key={index} className="badge-consommation">
+                                  {agence.nom}: {c.quantite}
+                                </span>
+                              ) : null
+                            })
+                            .filter(Boolean)}
+                        </div>
+                      ) : (
+                        <span className="no-consommation">Aucune</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        {stockData.length === 0 &&
+          dispatcheData.length === 0 &&
+          westernUnionData.length === 0 &&
+          directionData.length === 0 && (
+            <div className="no-data-message">Aucune donnée ne correspond aux critères de recherche.</div>
+          )}
 
         <div className="statistiques-inventaire">
           <div className="stat-item">
-            <div className="stat-label">Total des articles:</div>
-            <div className="stat-value">{inventaireFiltree.length}</div>
+            <div className="stat-label">Stock:</div>
+            <div className="stat-value">{stockData.length}</div>
           </div>
           <div className="stat-item">
-            <div className="stat-label">Articles en stock:</div>
-            <div className="stat-value">{inventaireFiltree.filter((item) => item.source === "Stock").length}</div>
+            <div className="stat-label">Dispatche:</div>
+            <div className="stat-value">{dispatcheData.length}</div>
           </div>
           <div className="stat-item">
-            <div className="stat-label">Articles dispatche:</div>
-            <div className="stat-value">
-              {
-                inventaireFiltree.filter((item) => ["Dispatche", "Western Union", "Direction"].includes(item.source))
-                  .length
-              }
-            </div>
+            <div className="stat-label">Western Union:</div>
+            <div className="stat-value">{westernUnionData.length}</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-label">Direction:</div>
+            <div className="stat-value">{directionData.length}</div>
           </div>
         </div>
       </div>
