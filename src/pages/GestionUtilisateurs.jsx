@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import "../styles/GestionUtilisateurs.css"
 import { Search, Filter, Package, AlertTriangle, CheckCircle, Clock, ArrowRight } from "lucide-react"
@@ -50,7 +48,6 @@ function GestionUtilisateurs() {
           dateInscription: "2023-01-15",
           type: "agence",
           agenceId: agencesData.length > 0 ? agencesData[0].id : null,
-          avatar: "/placeholder.svg?height=40&width=40",
           statut: "Actif",
           niveauStock: "moyen", // bas, moyen, haut
         },
@@ -63,7 +60,6 @@ function GestionUtilisateurs() {
           dateInscription: "2023-02-20",
           type: "westernUnion",
           agenceId: agencesWUData.length > 0 ? agencesWUData[0].id : null,
-          avatar: "/placeholder.svg?height=40&width=40",
           statut: "Actif",
           niveauStock: "bas",
         },
@@ -76,7 +72,6 @@ function GestionUtilisateurs() {
           dateInscription: "2023-03-10",
           type: "direction",
           agenceId: agencesDirData.length > 0 ? agencesDirData[0].id : null,
-          avatar: "/placeholder.svg?height=40&width=40",
           statut: "Actif",
           niveauStock: "haut",
         },
@@ -89,7 +84,6 @@ function GestionUtilisateurs() {
           dateInscription: "2023-04-05",
           type: "agence",
           agenceId: agencesData.length > 1 ? agencesData[1].id : null,
-          avatar: "/placeholder.svg?height=40&width=40",
           statut: "Actif",
           niveauStock: "critique",
         },
@@ -229,13 +223,13 @@ function GestionUtilisateurs() {
   const getStockColor = (etat) => {
     switch (etat) {
       case "critique":
-        return "#f44336" // Rouge
+        return "#800000" // Rouge foncé
       case "bas":
-        return "#ff9800" // Orange
+        return "#982B1C" // Rouge brique
       case "moyen":
-        return "#2196f3" // Bleu
+        return "#DAD4B5" // Beige clair
       case "haut":
-        return "#4caf50" // Vert
+        return "#F2E8C6" // Beige très clair
       default:
         return "#9e9e9e" // Gris
     }
@@ -338,9 +332,6 @@ function GestionUtilisateurs() {
 
             return (
               <div className="carte-utilisateur" key={utilisateur.id} onClick={() => ouvrirModalDetail(utilisateur)}>
-                <div className="utilisateur-avatar">
-                  <img src={utilisateur.avatar || "/placeholder.svg"} alt={utilisateur.nom} />
-                </div>
                 <div className="utilisateur-info">
                   <h3 className="utilisateur-nom">{utilisateur.nom}</h3>
                   <p className="utilisateur-poste">{utilisateur.poste}</p>
@@ -387,11 +378,6 @@ function GestionUtilisateurs() {
           <div className="modal-detail-utilisateur" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="utilisateur-detail-info">
-                <img
-                  src={utilisateurSelectionne.avatar || "/placeholder.svg"}
-                  alt={utilisateurSelectionne.nom}
-                  className="avatar-detail"
-                />
                 <div>
                   <h2>{utilisateurSelectionne.nom}</h2>
                   <p className="detail-poste">{utilisateurSelectionne.poste}</p>

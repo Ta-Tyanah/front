@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { useStock } from "../contexte/StockContexte"
 import "../styles/Stock.css"
@@ -121,7 +119,7 @@ function Stock() {
         id: Date.now(),
         designation: nouvelleDesignation,
         categorie: nouvelleCategorie,
-        stockAvant: { quantite: 0, montant: 0, cmup: 0 },
+        stockAvant: { quantite: 0, montant: 0 },
         stockActuel: {
           date: new Date().toISOString().split("T")[0],
           quantite,
@@ -309,7 +307,7 @@ function Stock() {
                 <tr>
                   <th>Désignation</th>
                   <th>Catégorie</th>
-                  <th colSpan="3">Stock Avant</th>
+                  <th colSpan="3">Stock Restant</th>
                   <th colSpan="4">Stock Actuel</th>
                   <th>Actions</th>
                 </tr>
@@ -318,7 +316,6 @@ function Stock() {
                   <th></th>
                   <th>Quantité</th>
                   <th>Montant</th>
-                  <th>CMUP</th>
                   <th>Date</th>
                   <th>Quantité</th>
                   <th>Prix Unitaire</th>
@@ -339,7 +336,6 @@ function Stock() {
                       </td>
                       <td className="cellule-readonly">{ligne.stockAvant.quantite}</td>
                       <td className="cellule-readonly">{ligne.stockAvant.montant}</td>
-                      <td className="cellule-readonly">{ligne.stockAvant.cmup}</td>
                       <td>{ligne.stockActuel.date}</td>
                       <td>{ligne.stockActuel.quantite}</td>
                       <td>{ligne.stockActuel.prixUnitaire}</td>

@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
       id: 1,
       nom: "Utilisateur Test",
       email: email,
-      avatar: "/placeholder.svg?height=100&width=100",
+      // Suppression de la référence à l'avatar
     }
 
     localStorage.setItem("utilisateur", JSON.stringify(utilisateur))
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
       id: 1,
       nom: nom,
       email: email,
-      avatar: "/placeholder.svg?height=100&width=100",
+      // Suppression de la référence à l'avatar
     }
 
     localStorage.setItem("utilisateur", JSON.stringify(utilisateur))

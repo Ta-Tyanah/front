@@ -95,14 +95,14 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
               <span className="texte-menu-item">Inventaire</span>
             </NavLink>
             <NavLink
-              to="/dashboard/agence"
+              to="/dashboard/dispatche"
               className={({ isActive }) => (isActive ? "lien-actif" : "")}
               onClick={fermerMenuMobile}
             >
               <span className="icone-menu-item">
                 <Building size={18} />
               </span>
-              <span className="texte-menu-item">Agence</span>
+              <span className="texte-menu-item">Dispatche</span>
             </NavLink>
           </div>
         </div>

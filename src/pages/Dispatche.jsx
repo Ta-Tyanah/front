@@ -1,10 +1,8 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import "../styles/Dispatche.css"
 import { Search, Plus, Edit, Trash, Save } from "lucide-react"
 
-function Agence() {
+function Dispatche() {
   // État pour les agences normaux
   const [dispatches, setDispatches] = useState([])
   const [agences, setAgences] = useState([])
@@ -1579,5 +1577,5 @@ function Agence() {
   )
 }
 
-export default Agence
+export default Dispatche
 

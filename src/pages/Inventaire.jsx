@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useStock } from "../contexte/StockContexte"
 import "../styles/Inventaire.css"

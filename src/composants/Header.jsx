@@ -1,9 +1,7 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexte/AuthContexte"
-import { User, LogOut, UserPlus, ChevronDown, ChevronUp } from "lucide-react"
+import {  LogOut, UserPlus, ChevronDown, ChevronUp } from "lucide-react"
 
 function Header() {
   const { utilisateurCourant, deconnexion } = useAuth()
@@ -53,18 +51,13 @@ function Header() {
     <header className={`dashboard-entete ${scrolled ? "scrolled" : ""}`}>
       <div className="logo">
         <div className="logo-carre">
-          <img src="/images/cem.png" alt="Caisse d'Epargne de Madagascar" className="logo-image" />
+          <img src="/images/cem.png" alt="CEM" className="logo-image" />
         </div>
         <h1>GestionStock</h1>
       </div>
 
       <div className="profil-utilisateur">
         <div className="info-utilisateur" onClick={basculerMenuProfil}>
-          <img
-            src={utilisateurCourant?.avatar || "/placeholder.svg?height=40&width=40"}
-            alt="Avatar"
-            className="avatar-utilisateur"
-          />
           <span className="nom-utilisateur">{utilisateurCourant?.nom || "Utilisateur"}</span>
           <span className="icone-fleche-bas">
             {menuProfilOuvert ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -73,12 +66,7 @@ function Header() {
 
         {menuProfilOuvert && (
           <div className="menu-profil">
-            <NavLink to="/dashboard/profil" onClick={() => setMenuProfilOuvert(false)}>
-              <span className="icone-menu-item">
-                <User size={16} />
-              </span>{" "}
-              Profil
-            </NavLink>
+            
             <NavLink to="/inscription" onClick={() => setMenuProfilOuvert(false)}>
               <span className="icone-menu-item">
                 <UserPlus size={16} />

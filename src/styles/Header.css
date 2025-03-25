@@ -13,22 +13,74 @@
 .logo {
   display: flex;
   align-items: center;
-  
+  margin-right: 2rem;
 }
 
 .logo h1 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #2196f3;
+  color: #e50000;
   margin: 0;
 }
 
-.logo-image {
-  height: 5px;
-  width: auto;
-  margin-right: 10px;
+.logo-carre {
+  width: 50px;
+  height: 50px;
+  background-color: #e50000;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.logo-texte {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+}
+
+.header-recherche {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 500px;
+  margin: 0 1rem;
+}
+
+.champ-recherche {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px 0 0 8px;
+  font-size: 0.9rem;
+  background-color: #f5f5f5;
+  transition: all 0.3s;
+}
+
+.champ-recherche:focus {
+  outline: none;
+  border-color: #e50000;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(229, 0, 0, 0.1);
+}
+
+.bouton-recherche {
+  padding: 0.6rem 1rem;
+  background-color: #e50000;
+  color: white;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.bouton-recherche:hover {
+  background-color: #c50000;
+}
 
 .header-actions {
   display: flex;
@@ -50,7 +102,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: #f44336;
+  background-color: #e50000;
   color: white;
   font-size: 0.7rem;
   font-weight: bold;
@@ -80,12 +132,24 @@
   background-color: #f5f5f5;
 }
 
-.avatar-utilisateur {
-  width: 40px;
-  height: 40px;
+.avatar-initiales {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e3f2fd;
+  background-color: #e50000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(229, 0, 0, 0.3);
+}
+
+.info-utilisateur:hover .avatar-initiales {
+  background-color: #c50000;
+  transform: scale(1.05);
 }
 
 .details-utilisateur {
@@ -114,7 +178,7 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 280px;
+  width: 220px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -135,7 +199,13 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  object-fit: cover;
+  background-color: #e50000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
 .nom-menu {
@@ -175,7 +245,7 @@
 }
 
 .option-deconnexion {
-  color: #f44336;
+  color: #e50000;
 }
 
 .option-deconnexion:hover {
