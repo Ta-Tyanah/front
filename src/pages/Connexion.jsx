@@ -78,9 +78,7 @@ function Connexion() {
           </button>
         </form>
 
-        <p className="lien-inscription">
-          Pas encore de compte? <Link to="/inscription">S'inscrire</Link>
-        </p>
+        
       </div>
     </div>
   )
