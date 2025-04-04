@@ -1,5 +1,7 @@
+"use client"
+
 import { useState, useEffect } from "react"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useNavigate, useLocation } from "react-router-dom"
 import Header from "../composants/Header"
 import SidebarMenu from "../composants/SidebarMenu"
 
@@ -7,6 +9,14 @@ function Dashboard() {
   const [menuMobileOuvert, setMenuMobileOuvert] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Rediriger vers l'accueil si on est à la racine du dashboard
+  useEffect(() => {
+    if (location.pathname === "/dashboard") {
+      navigate("/dashboard/accueil")
+    }
+  }, [location.pathname, navigate])
 
   // Simulation de chargement initial
   useEffect(() => {

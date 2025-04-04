@@ -1,0 +1,227 @@
+/* Styles pour le profil utilisateur */
+.profil-utilisateur-contenu {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+}
+
+.profil-carte {
+  background-color: #ffffff;
+  border-radius: var(--border-radius-md);
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--gray-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profil-avatar {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1rem;
+}
+
+.avatar-initiales {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red-light), var(--red-primary));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.profil-nom {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  color: var(--dark);
+}
+
+.profil-email {
+  color: var(--gray);
+  margin-bottom: 1rem;
+}
+
+.profil-formulaire-section {
+  background-color: #ffffff;
+  border-radius: var(--border-radius-md);
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--gray-light);
+}
+
+.profil-formulaire-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.profil-formulaire-section h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, var(--red-primary), var(--red-light));
+  transition: width 0.3s ease;
+}
+
+.profil-formulaire {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.actions-profil {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Styles pour le modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-contenu {
+  background-color: #ffffff;
+  border-radius: var(--border-radius-md);
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-contenu h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.modal-contenu h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, var(--red-primary), var(--red-light));
+}
+
+.formulaire-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.groupe-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.groupe-champ label {
+  font-weight: 500;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.groupe-champ input,
+.groupe-champ select,
+.groupe-champ textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--gray-light);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.groupe-champ input:focus,
+.groupe-champ select:focus,
+.groupe-champ textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(222, 43, 43, 0.1);
+}
+
+.actions-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.bouton-annuler {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--gray-light);
+  color: var(--gray-dark);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bouton-annuler:hover {
+  background-color: var(--gray);
+  color: #ffffff;
+}
+
+.bouton-sauvegarder {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--red-light), var(--red-primary));
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(222, 43, 43, 0.3);
+}
+
+.bouton-sauvegarder:hover {
+  background: linear-gradient(135deg, var(--red-primary), var(--red-dark));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(222, 43, 43, 0.4);
+}
+
+@media (max-width: 768px) {
+  .profil-utilisateur-contenu {
+    grid-template-columns: 1fr;
+  }
+
+  .profil-carte {
+    margin-bottom: 1.5rem;
+  }
+
+  .profil-formulaire {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-profil {
+    grid-column: 1;
+  }
+}
+

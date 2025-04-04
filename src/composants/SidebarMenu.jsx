@@ -53,7 +53,7 @@ function SidebarMenu({ menuMobileOuvert, setMenuMobileOuvert }) {
         <div className="groupe-menu">
           <h3 className="titre-menu">Tableau de bord</h3>
           <NavLink
-            to="/AccueilDashboard"
+            to="/dashboard/AccueilDashboard"
             end
             className={({ isActive }) => (isActive ? "lien-actif" : "")}
             onClick={fermerMenuMobile}

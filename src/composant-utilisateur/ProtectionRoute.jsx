@@ -2,6 +2,7 @@
 
 import { Navigate } from "react-router-dom"
 import { useAuth } from "../contexte/AuthContexte"
+import PropTypes from 'prop-types';
 
 function ProtectionRoute({ children }) {
   const { utilisateurCourant } = useAuth()
@@ -13,5 +14,9 @@ function ProtectionRoute({ children }) {
   return children
 }
 
-export default ProtectionRoute
+// Ajout des PropTypes
+ProtectionRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
+export default ProtectionRoute

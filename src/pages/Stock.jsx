@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useRef } from "react"
 import { useStock } from "../contexte/StockContexte"
 import "../styles/Stock.css"
@@ -19,6 +21,7 @@ function Stock() {
   const [nouvelleCategorie, setNouvelleCategorie] = useState("")
   const [nouvelleQuantite, setNouvelleQuantite] = useState("")
   const [nouveauPrixUnitaire, setNouveauPrixUnitaire] = useState("")
+  const [nouvelleDate, setNouvelleDate] = useState("2025-03-14") // Date par défaut
   const [modalOuverte, setModalOuverte] = useState(false)
   const [categorieSelectionnee, setCategorieSelectionnee] = useState(null)
   const [modalDetailOuverte, setModalDetailOuverte] = useState(false)
@@ -57,6 +60,7 @@ function Stock() {
     setNouvelleCategorie(categoriesStock.length > 0 ? categoriesStock[0].nom : "")
     setNouvelleQuantite("")
     setNouveauPrixUnitaire("")
+    setNouvelleDate("2025-03-14") // Date par défaut
     setModalOuverte(true)
   }
 
@@ -67,6 +71,7 @@ function Stock() {
     setNouvelleCategorie(ligne.categorie)
     setNouvelleQuantite(ligne.stockActuel.quantite.toString())
     setNouveauPrixUnitaire(ligne.stockActuel.prixUnitaire.toString())
+    setNouvelleDate(ligne.stockActuel.date)
     setModalOuverte(true)
   }
 
@@ -103,6 +108,7 @@ function Stock() {
         categorie: nouvelleCategorie,
         stockActuel: {
           ...ligneEditee.stockActuel,
+          date: nouvelleDate, // Utiliser la date saisie manuellement
           quantite,
           prixUnitaire,
           montant,
@@ -119,14 +125,14 @@ function Stock() {
         id: Date.now(),
         designation: nouvelleDesignation,
         categorie: nouvelleCategorie,
-        stockAvant: { quantite: 0, montant: 0 },
+        stockAvant: { quantite: 0, montant: 0, cmup: 0 }, // Ajout du CMUP
         stockActuel: {
-          date: new Date().toISOString().split("T")[0],
+          date: nouvelleDate, // Utiliser la date saisie manuellement
           quantite,
           prixUnitaire,
           montant,
         },
-        dateEntree: new Date().toISOString().split("T")[0],
+        dateEntree: nouvelleDate, // Utiliser la date saisie manuellement
         dateSortie: "",
       }
 
@@ -316,6 +322,7 @@ function Stock() {
                   <th></th>
                   <th>Quantité</th>
                   <th>Montant</th>
+                  <th>CMUP</th>
                   <th>Date</th>
                   <th>Quantité</th>
                   <th>Prix Unitaire</th>
@@ -336,6 +343,7 @@ function Stock() {
                       </td>
                       <td className="cellule-readonly">{ligne.stockAvant.quantite}</td>
                       <td className="cellule-readonly">{ligne.stockAvant.montant}</td>
+                      <td className="cellule-readonly">{ligne.stockAvant.cmup || 0}</td>
                       <td>{ligne.stockActuel.date}</td>
                       <td>{ligne.stockActuel.quantite}</td>
                       <td>{ligne.stockActuel.prixUnitaire}</td>
@@ -419,6 +427,19 @@ function Stock() {
               </div>
 
               <div className="groupe-champ">
+                <label htmlFor="date">Date</label>
+                <input
+                  id="date"
+                  type="text"
+                  value={nouvelleDate}
+                  onChange={(e) => setNouvelleDate(e.target.value)}
+                  placeholder="AAAA-MM-JJ"
+                  pattern="\d{4}-\d{2}-\d{2}"
+                  required
+                />
+              </div>
+
+              <div className="groupe-champ">
                 <label htmlFor="quantite">Quantité</label>
                 <input
                   id="quantite"
@@ -448,7 +469,13 @@ function Stock() {
                 <button
                   className="bouton-sauvegarder"
                   onClick={sauvegarderLigne}
-                  disabled={!nouvelleDesignation || !nouvelleCategorie || !nouvelleQuantite || !nouveauPrixUnitaire}
+                  disabled={
+                    !nouvelleDesignation ||
+                    !nouvelleCategorie ||
+                    !nouvelleQuantite ||
+                    !nouveauPrixUnitaire ||
+                    !nouvelleDate
+                  }
                 >
                   Sauvegarder
                 </button>

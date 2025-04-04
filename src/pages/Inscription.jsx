@@ -7,6 +7,7 @@ function Inscription() {
   const [nom, setNom] = useState("")
   const [email, setEmail] = useState("")
   const [agence, setAgence] = useState("")
+  const [fonction, setFonction] = useState("")
   const [motDePasse, setMotDePasse] = useState("")
   const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("")
 
@@ -82,6 +83,21 @@ function Inscription() {
               required
               className="champ-saisie"
             />
+          </div>
+
+          <div className="groupe-champ">
+            <label htmlFor="type">Fonction</label>
+            <select
+              id="fonction"
+              value={fonction}
+              onChange={(e) => setFonction(e.target.value)}
+              required
+              className="champ-saisie"
+            >
+              <option value="">Sélectionnez une fonction</option>
+              <option value="admin">Administrateur</option>
+              <option value="utilisateur">Utilisateur</option>
+            </select>
           </div>
 
           <div className="groupe-champ">

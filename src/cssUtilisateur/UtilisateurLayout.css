@@ -1,0 +1,19 @@
+.utilisateur-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .utilisateur-main-content {
+    flex: 1;
+    margin-left: 280px;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+  }
+  
+  @media (max-width: 768px) {
+    .utilisateur-main-content {
+      margin-left: 0;
+    }
+  }
+  
+  

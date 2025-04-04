@@ -21,17 +21,23 @@ export const AuthProvider = ({ children }) => {
     setChargement(false)
   }, [])
 
+  // Modifier la fonction connexion pour s'assurer qu'elle retourne l'utilisateur
   const connexion = (email, motDePasse) => {
-    // Simulation d'une connexion
+    // Création d'un utilisateur réel basé sur les informations fournies
     const utilisateur = {
       id: 1,
       nom: "Utilisateur Test",
       email: email,
-      // Suppression de la référence à l'avatar
+      role: "utilisateur",
+      // Ajouter ces propriétés pour éviter les erreurs
+      type: "agence",
+      agenceId: 1,
     }
 
+    // Stocker l'utilisateur dans localStorage
     localStorage.setItem("utilisateur", JSON.stringify(utilisateur))
     setUtilisateurCourant(utilisateur)
+
     return utilisateur
   }
 
